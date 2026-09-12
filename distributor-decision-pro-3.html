@@ -1,0 +1,2770 @@
+<!DOCTYPE html>
+<html lang="hi-en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Distributor Decision Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F4F0;
+  --surface:#FFFFFF;
+  --surface-2:#FBFAF7;
+  --ink:#161C1A;
+  --ink-soft:#5C635F;
+  --ink-faint:#8A8F8B;
+  --border:#DFDCD3;
+  --border-soft:#EBE9E2;
+  --accent:#0E4A40;
+  --accent-2:#C8863C;
+  --accent-soft:#E3ECE8;
+  --good:#1B7A4B;
+  --good-soft:#E7F4EC;
+  --warn:#A66A0C;
+  --warn-soft:#FBF0DD;
+  --bad:#AE2E24;
+  --bad-soft:#FBEAE8;
+  --radius:14px;
+  --radius-sm:9px;
+  --shadow:0 1px 2px rgba(20,25,22,.04), 0 6px 20px -8px rgba(20,25,22,.10);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:78px;
+  min-height:100vh;
+}
+.font-display{font-family:'Fraunces',serif;}
+h1,h2,h3{margin:0;font-family:'Fraunces',serif;font-weight:600;letter-spacing:-0.01em;}
+p{margin:0;}
+button{font-family:inherit;cursor:pointer;}
+input,select,textarea{font-family:inherit;}
+::selection{background:var(--accent-soft);}
+.tabular{font-variant-numeric:tabular-nums;}
+
+/* ===== HEADER ===== */
+.topbar{
+  position:sticky;top:0;z-index:40;
+  background:var(--accent);
+  color:#fff;
+  padding:14px 16px 12px;
+}
+.topbar-inner{max-width:920px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.brand{display:flex;flex-direction:column;gap:1px;}
+.brand-name{font-size:19px;font-weight:600;letter-spacing:-0.01em;line-height:1.15;}
+.brand-sub{font-size:11.5px;color:#BFE0D3;font-family:'Inter';font-weight:500;}
+.company-switch{display:flex;gap:6px;}
+.pill-btn{
+  border:1px solid rgba(255,255,255,.28);
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:600;
+  white-space:nowrap;
+}
+.pill-btn.active{background:#fff;color:var(--accent);border-color:#fff;}
+
+/* ===== LAYOUT ===== */
+.wrap{max-width:920px;margin:0 auto;padding:16px;}
+.section-title{font-size:13px;font-weight:700;text-transform:none;color:var(--ink-soft);margin:22px 2px 10px;letter-spacing:.01em;}
+.section-title:first-child{margin-top:4px;}
+
+/* ===== DASHBOARD CARDS ===== */
+.dash-grid{display:grid;grid-template-columns:1fr;gap:12px;}
+@media(min-width:640px){.dash-grid{grid-template-columns:1fr 1fr;}}
+.company-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px;
+  box-shadow:var(--shadow);
+  position:relative;
+  overflow:hidden;
+}
+.company-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent-2);}
+.company-card.filled:before{background:var(--good);}
+.company-card h3{font-size:17px;margin-bottom:2px;}
+.status-tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--warn-soft);color:var(--warn);margin-bottom:10px;}
+.status-tag.filled{background:var(--good-soft);color:var(--good);}
+.mini-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin-top:8px;}
+.mini-stat{display:flex;flex-direction:column;gap:1px;}
+.mini-stat .lbl{font-size:10.5px;color:var(--ink-faint);font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
+.mini-stat .val{font-size:15px;font-weight:700;}
+.card-action{
+  margin-top:14px;width:100%;padding:11px;border-radius:10px;border:none;
+  background:var(--accent);color:#fff;font-weight:600;font-size:14px;
+}
+.dash-actions{display:flex;flex-direction:column;gap:10px;margin-top:18px;}
+.btn-secondary{
+  padding:13px;border-radius:10px;border:1px solid var(--border);
+  background:var(--surface);color:var(--ink);font-weight:600;font-size:14.5px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-primary-lg{
+  padding:15px;border-radius:10px;border:none;
+  background:var(--accent);color:#fff;font-weight:700;font-size:15px;
+}
+
+/* ===== FORM SYSTEM ===== */
+.accordion{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow);}
+.accordion-head{
+  padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.accordion-head-left{display:flex;flex-direction:column;gap:2px;}
+.accordion-head h4{font-size:15px;font-family:'Inter';font-weight:700;}
+.accordion-head .sub{font-size:12px;color:var(--ink-faint);font-family:'Inter';}
+.accordion-chev{width:20px;height:20px;flex:none;color:var(--ink-faint);transition:transform .15s;}
+.accordion.open .accordion-chev{transform:rotate(180deg);}
+.accordion-body{display:none;padding:2px 16px 18px;border-top:1px solid var(--border-soft);}
+.accordion.open .accordion-body{display:block;}
+.accordion-badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;}
+.field{margin-top:14px;}
+.field label{display:block;font-size:13.5px;font-weight:600;margin-bottom:3px;}
+.field .explain{font-size:12px;color:var(--ink-faint);margin-bottom:7px;line-height:1.4;}
+.field input[type=text],.field input[type=number],.field input[type=tel],.field textarea,.field select{
+  width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:9px;
+  font-size:14.5px;background:var(--surface-2);color:var(--ink);
+}
+.field textarea{min-height:64px;resize:vertical;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent);background:#fff;}
+.pillgroup{display:flex;flex-wrap:wrap;gap:7px;}
+.pillgroup button{
+  padding:9px 13px;border-radius:9px;border:1.5px solid var(--border);background:var(--surface-2);
+  font-size:13px;font-weight:600;color:var(--ink-soft);
+}
+.pillgroup button.sel{background:var(--accent);border-color:var(--accent);color:#fff;}
+.pillgroup button.sel.good{background:var(--good);border-color:var(--good);}
+.pillgroup button.sel.bad{background:var(--bad);border-color:var(--bad);}
+.pillgroup button.sel.warn{background:var(--warn);border-color:var(--warn);}
+.field-note{margin-top:16px;}
+.currency-prefix{position:relative;}
+.currency-prefix span{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink-faint);font-weight:600;font-size:14.5px;}
+.currency-prefix input{padding-left:26px !important;}
+
+/* ===== ALERTS ===== */
+.alert{padding:11px 13px;border-radius:10px;font-size:13px;font-weight:600;line-height:1.45;margin-top:12px;display:flex;gap:8px;}
+.alert.bad{background:var(--bad-soft);color:var(--bad);}
+.alert.warn{background:var(--warn-soft);color:var(--warn);}
+.alert.good{background:var(--good-soft);color:var(--good);}
+.alert svg{flex:none;margin-top:1px;}
+
+/* ===== PRODUCTS ===== */
+.product-card{border:1.5px solid var(--border);border-radius:12px;padding:13px;margin-top:12px;background:var(--surface-2);}
+.product-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px;}
+.product-card-top input{font-weight:700;font-size:15px;border:none;background:transparent;padding:0;width:100%;}
+.icon-btn{border:none;background:transparent;color:var(--ink-faint);padding:4px;flex:none;}
+.icon-btn:hover{color:var(--bad);}
+.product-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.product-grid .f{display:flex;flex-direction:column;gap:3px;}
+.product-grid label{font-size:10.5px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.02em;}
+.product-grid input,.product-grid select{padding:8px 9px;border:1px solid var(--border);border-radius:7px;font-size:13.5px;background:#fff;}
+.product-calc{margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;}
+.product-calc .c{display:flex;justify-content:space-between;font-size:12.5px;}
+.product-calc .c b{font-weight:700;}
+.add-product-btn{margin-top:12px;width:100%;padding:12px;border-radius:9px;border:1.5px dashed var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:14px;}
+.totals-strip{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;background:var(--accent-soft);border-radius:10px;padding:12px 14px;margin-top:12px;}
+.totals-strip .t{display:flex;flex-direction:column;}
+.totals-strip .t .l{font-size:10.5px;font-weight:700;color:var(--accent);opacity:.75;text-transform:uppercase;}
+.totals-strip .t .v{font-size:15px;font-weight:800;color:var(--accent);}
+
+/* ===== DOC CHECKLIST ===== */
+.doc-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-soft);gap:10px;}
+.doc-row:last-child{border-bottom:none;}
+.doc-row .name{font-size:13.5px;font-weight:600;flex:1;}
+.doc-progress{height:9px;background:var(--border-soft);border-radius:99px;overflow:hidden;margin-top:6px;}
+.doc-progress-fill{height:100%;background:var(--good);border-radius:99px;transition:width .3s;}
+.photo-strip{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
+.photo-card{position:relative;display:flex;gap:10px;align-items:center;border:1px solid var(--border);border-radius:10px;padding:8px;background:var(--surface-2);}
+.photo-card .photo-thumb{flex-shrink:0;width:56px;height:56px;border-radius:8px;overflow:hidden;border:1px solid var(--border);background:#fff;}
+.photo-card .photo-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.photo-thumb-loading,.photo-thumb-missing{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--ink-faint);}
+.photo-card .photo-meta{flex:1;min-width:0;}
+.photo-card .photo-caption{width:100%;border:1px solid var(--border);border-radius:7px;padding:7px 9px;font-size:12.5px;font-family:inherit;}
+.photo-card .photo-ts{font-size:10.5px;color:var(--ink-faint);margin-top:3px;}
+.photo-del{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;border:none;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;}
+
+/* ===== SIMULATOR RESULT ===== */
+.result-box{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:16px;margin-top:14px;}
+.result-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border-soft);font-size:13.5px;}
+.result-row:last-child{border-bottom:none;}
+.result-row.total{font-weight:800;font-size:16px;color:var(--accent);}
+.result-row .v{font-weight:700;}
+.big-metric{text-align:center;padding:18px 10px;background:var(--accent);border-radius:12px;color:#fff;margin-top:14px;}
+.big-metric .num{font-size:30px;font-weight:800;font-family:'Fraunces';}
+.big-metric .lbl{font-size:12.5px;color:#BFE0D3;font-weight:600;margin-top:2px;}
+.disclaimer{font-size:11.5px;color:var(--ink-faint);margin-top:10px;line-height:1.5;font-style:italic;}
+
+/* ===== RISK ===== */
+.risk-badge{display:inline-block;padding:6px 14px;border-radius:999px;font-weight:800;font-size:13px;margin-top:6px;}
+.risk-LOW{background:var(--good-soft);color:var(--good);}
+.risk-MEDIUM{background:var(--warn-soft);color:var(--warn);}
+.risk-HIGH{background:#FBE3D8;color:#B2541A;}
+.risk-VERYHIGH{background:var(--bad-soft);color:var(--bad);}
+.flag-item{display:flex;gap:9px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border-soft);font-size:13px;}
+.flag-item:last-child{border-bottom:none;}
+.flag-dot{width:8px;height:8px;border-radius:50%;background:var(--bad);flex:none;margin-top:5px;}
+
+/* ===== SCORE ===== */
+.score-ring-wrap{display:flex;align-items:center;gap:16px;margin-top:12px;}
+.score-num{font-size:38px;font-weight:800;font-family:'Fraunces';color:var(--accent);}
+.score-bars{flex:1;display:flex;flex-direction:column;gap:8px;}
+.score-bar-row{display:flex;align-items:center;gap:8px;font-size:11.5px;}
+.score-bar-row .lb{width:96px;flex:none;color:var(--ink-soft);font-weight:600;}
+.score-bar-track{flex:1;height:7px;background:var(--border-soft);border-radius:99px;overflow:hidden;}
+.score-bar-fill{height:100%;background:var(--accent);}
+.score-bar-row .pt{width:40px;text-align:right;font-weight:700;color:var(--ink);flex:none;}
+.slider-row{margin-top:12px;}
+.slider-row label{font-size:13px;font-weight:600;display:flex;justify-content:space-between;}
+.slider-row input[type=range]{width:100%;margin-top:6px;accent-color:var(--accent);}
+
+/* ===== COMPARISON ===== */
+.compare-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+.compare-table th,.compare-table td{padding:10px 10px;text-align:left;border-bottom:1px solid var(--border-soft);}
+.compare-table th{background:var(--surface-2);font-size:11.5px;text-transform:uppercase;letter-spacing:.02em;color:var(--ink-faint);font-weight:700;}
+.compare-table td.rowlabel{font-weight:600;color:var(--ink-soft);white-space:nowrap;}
+.compare-table tr:last-child td{border-bottom:none;}
+.tag-ok{color:var(--good);font-weight:700;}
+.tag-warn{color:var(--warn);font-weight:700;}
+.tag-bad{color:var(--bad);font-weight:700;}
+.compare-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+
+/* ===== FINAL DECISION ===== */
+.decision-hero{border-radius:16px;padding:26px 20px;text-align:center;color:#fff;}
+.decision-hero.good{background:linear-gradient(160deg,#0E4A40,#146652);}
+.decision-hero.bad{background:linear-gradient(160deg,#7A2620,#9C332A);}
+.decision-hero .tag{font-size:11.5px;font-weight:700;letter-spacing:.06em;opacity:.75;text-transform:uppercase;}
+.decision-hero h2{font-size:26px;margin-top:6px;color:#fff;}
+.reason-list{margin-top:14px;}
+.reason-item{display:flex;gap:9px;padding:9px 0;border-bottom:1px solid var(--border-soft);font-size:13.5px;align-items:flex-start;}
+.reason-item:last-child{border-bottom:none;}
+.pending-box{background:var(--bad-soft);border-radius:12px;padding:14px 16px;margin-top:14px;}
+.pending-box h4{color:var(--bad);font-family:'Inter';font-size:14px;margin-bottom:8px;}
+.pending-box .item{font-size:13px;color:var(--bad);padding:4px 0;display:flex;gap:7px;}
+
+/* ===== MEETING MODE ===== */
+.meeting-progress-bar{height:6px;background:var(--border-soft);border-radius:99px;overflow:hidden;margin:12px 0 4px;}
+.meeting-progress-fill{height:100%;background:var(--accent-2);transition:width .2s;}
+.meeting-qcard{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:22px 18px;margin-top:14px;box-shadow:var(--shadow);}
+.meeting-qnum{font-size:11.5px;font-weight:700;color:var(--accent-2);text-transform:uppercase;letter-spacing:.03em;}
+.meeting-qtext{font-size:19px;font-weight:600;font-family:'Fraunces';margin-top:6px;line-height:1.35;}
+.meeting-nav{display:flex;gap:10px;margin-top:16px;}
+.meeting-nav button{flex:1;padding:12px;border-radius:9px;border:1.5px solid var(--border);background:var(--surface);font-weight:700;font-size:14px;}
+.meeting-nav button:disabled{opacity:.35;}
+.meeting-jump{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px;max-height:150px;overflow:auto;}
+.meeting-jump button{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);font-size:11px;font-weight:700;background:var(--surface-2);}
+.meeting-jump button.cur{border-color:var(--accent);border-width:2px;}
+.meeting-jump button.answered{background:var(--good-soft);color:var(--good);border-color:transparent;}
+.custom-q-add{display:flex;gap:8px;margin-top:14px;}
+.custom-q-add input{flex:1;padding:10px;border-radius:9px;border:1px solid var(--border);}
+.custom-q-add button{padding:10px 14px;border-radius:9px;border:none;background:var(--accent);color:#fff;font-weight:700;}
+
+/* ===== BOTTOM NAV ===== */
+.bottomnav{
+  position:fixed;bottom:0;left:0;right:0;z-index:50;
+  background:rgba(255,255,255,.94);backdrop-filter:blur(10px);
+  border-top:1px solid var(--border);
+  display:flex;padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+}
+.bottomnav button{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  border:none;background:transparent;color:var(--ink-faint);padding:6px 2px;border-radius:10px;font-size:10px;font-weight:600;
+}
+.bottomnav button.active{color:var(--accent);}
+.bottomnav svg{width:20px;height:20px;}
+
+/* ===== MISC ===== */
+.top-actions{display:flex;gap:8px;margin-bottom:4px;}
+.small-btn{padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-size:12.5px;font-weight:600;color:var(--ink-soft);}
+.warning-banner{background:var(--bad);color:#fff;padding:12px 16px;border-radius:12px;font-weight:700;font-size:14px;display:flex;gap:9px;align-items:center;margin-bottom:14px;}
+.hidden{display:none !important;}
+.footer-space{height:20px;}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:9px 16px;border-radius:99px;font-size:12.5px;font-weight:600;z-index:60;opacity:0;transition:opacity .25s;pointer-events:none;}
+.toast.show{opacity:1;}
+#print-area{display:none;}
+@media print{
+  body *{visibility:hidden;}
+  #print-area,#print-area *{visibility:visible;}
+  #print-area{display:block;position:absolute;left:0;top:0;width:100%;padding:20px;}
+  .bottomnav,.topbar{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-name">Distributor Decision Pro</div>
+      <div class="brand-sub">Compare Before You Invest</div>
+    </div>
+    <div class="company-switch" id="companySwitch"></div>
+  </div>
+</div>
+
+<div class="wrap" id="app"></div>
+<div id="print-area"></div>
+<div class="toast" id="toast"></div>
+
+<div class="bottomnav" id="bottomnav"></div>
+
+<script>
+/* =========================================================
+   DISTRIBUTOR DECISION PRO — single file app
+   ========================================================= */
+
+/* ---------- storage helpers (in-memory + window.storage) ---------- */
+const STORAGE_KEY = "ddp-state-v1";
+let saveTimer = null;
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async ()=>{
+    try{
+      if(window.storage && typeof window.storage.set === "function"){
+        const json = JSON.stringify(state);
+        if(json.length > 4.5*1024*1024){
+          showToast("⚠️ App data (text) bahut bada ho gaya hai — kripya kuch notes/products kam karein.");
+          return;
+        }
+        await window.storage.set(STORAGE_KEY, json, false);
+      }
+    }catch(e){ showToast("⚠️ Save nahi ho paya."); }
+  }, 400);
+}
+async function loadState(){
+  try{
+    if(window.storage && typeof window.storage.get === "function"){
+      const r = await window.storage.get(STORAGE_KEY, false);
+      if(r && typeof r === "object" && r.value) return JSON.parse(r.value);
+    }
+  }catch(e){ /* key not found or storage unavailable */ }
+  return null;
+}
+/* ---------- Photo blob storage: EACH photo gets its own storage key ----------
+   The main state blob has a combined 5MB cap. Keeping photos out of it means adding
+   more photos never competes with your other data or forces you to delete anything —
+   each photo (compressed to ~50-150KB) has its own slot, well under that cap on its own. */
+const photoCache = new Map(); // id -> dataUrl ("loading" while a fetch is in flight, undefined if it failed)
+function photoStorageKey(id){ return "photo:"+id; }
+async function savePhotoBlob(id, dataUrl){
+  if(!(window.storage && typeof window.storage.set === "function")) return;
+  await window.storage.set(photoStorageKey(id), dataUrl, false);
+}
+async function loadPhotoBlob(id){
+  if(!(window.storage && typeof window.storage.get === "function")) return null;
+  try{
+    const r = await window.storage.get(photoStorageKey(id), false);
+    return (r && r.value) ? r.value : null;
+  }catch(e){ return null; }
+}
+async function deletePhotoBlob(id){
+  if(!(window.storage && typeof window.storage.delete === "function")) return;
+  try{ await window.storage.delete(photoStorageKey(id)); }catch(e){ /* already gone, fine */ }
+}
+function ensurePhotoLoaded(id){
+  if(photoCache.has(id)) return; // already loaded, loading, or known-missing
+  photoCache.set(id, "loading");
+  loadPhotoBlob(id).then(val=>{ photoCache.set(id, val || undefined); render(); })
+                    .catch(()=>{ photoCache.set(id, undefined); render(); });
+}
+/* Collects every {id} referenced anywhere in a company's photo arrays. */
+function allPhotoIdsIn(c){
+  const ids = [];
+  Object.keys(c).forEach(k=>{ if(c[k] && Array.isArray(c[k].photos)) c[k].photos.forEach(p=>ids.push(p.id)); });
+  if(c.meeting && c.meeting.answers) Object.values(c.meeting.answers).forEach(a=>{ if(Array.isArray(a.photos)) a.photos.forEach(p=>ids.push(p.id)); });
+  return ids;
+}
+/* One-time migration: earlier builds stored dataUrl inline inside state. Move any such
+   photo into its own storage key + in-memory cache, and strip the heavy field out of state. */
+async function migrateInlinePhotos(c){
+  let changed = false;
+  const migrateArr = async (arr)=>{
+    for(const p of (arr||[])){
+      if(p && p.dataUrl){
+        photoCache.set(p.id, p.dataUrl);
+        try{ await savePhotoBlob(p.id, p.dataUrl); }catch(e){ /* keep in-memory at least */ }
+        delete p.dataUrl;
+        changed = true;
+      }
+    }
+  };
+  for(const k of Object.keys(c)){ if(c[k] && Array.isArray(c[k].photos)) await migrateArr(c[k].photos); }
+  if(c.meeting && c.meeting.answers){ for(const a of Object.values(c.meeting.answers)){ if(Array.isArray(a.photos)) await migrateArr(a.photos); } }
+  return changed;
+}
+/* Preloads every photo a company actually references — used before printing/exporting
+   so we're never missing image data at the moment it's needed. */
+async function preloadAllPhotos(c){
+  const ids = [...new Set(allPhotoIdsIn(c))];
+  for(const id of ids){
+    if(!photoCache.has(id) || photoCache.get(id)===undefined){
+      const val = await loadPhotoBlob(id);
+      photoCache.set(id, val || undefined);
+    }
+  }
+}
+
+/* ---------- formatting ---------- */
+function inr(n){
+  n = Number(n)||0;
+  const neg = n<0; n=Math.abs(n);
+  let s = n.toFixed(n%1===0?0:2);
+  let [intPart, dec] = s.split(".");
+  let last3 = intPart.slice(-3);
+  let rest = intPart.slice(0,-3);
+  if(rest) rest = rest.replace(/\B(?=(\d{2})+(?!\d))/g, ",");
+  let out = (rest? rest+","+last3 : last3);
+  return (neg?"-":"") + "₹" + out + (dec?("."+dec):"");
+}
+function num(v){ const n=parseFloat(v); return isNaN(n)?0:n; }
+function pct(n){ return (isFinite(n)?n:0).toFixed(1)+"%"; }
+function uid(){ return Math.random().toString(36).slice(2,9); }
+function esc(v){
+  if(v===null||v===undefined) return "";
+  return String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+
+/* ---------- question bank ---------- */
+const QUESTION_BANK = [
+"₹{investment} ka exact breakup kya hai?",
+"Product-wise kitna stock milega?",
+"Total stock value kitni hai?",
+"GST included hai ya extra?",
+"GST invoice milega?",
+"MRP kya hai?",
+"Distributor purchase price kya hai?",
+"Retailer ko kitne me bechna hai?",
+"Retailer margin kitna hai?",
+"Mera actual gross margin kitna hai?",
+"Scheme/discount kya hai?",
+"District kaunsa milega?",
+"District exclusive hai?",
+"Agreement me exclusive rights written honge?",
+"Company direct market me supply karegi?",
+"Online sales ka kya rule hai?",
+"Monthly target kya hai?",
+"Target miss hua to kya hoga?",
+"Reorder MOQ kya hai?",
+"Reorder price kya hai?",
+"Reorder transport free hai?",
+"Leakage replacement?",
+"Breakage replacement?",
+"Expired stock ka kya hoga?",
+"Near-expiry stock ka kya hoga?",
+"Unsold stock ka kya hoga?",
+"Marketing support kya milega?",
+"Salesman support milega?",
+"Credit facility hai?",
+"Written agreement milega?",
+"Exit policy kya hai?",
+"Existing distributor ka contact mil sakta hai?"
+];
+
+/* ---------- default company object ---------- */
+function blankCompany(name){
+  return {
+    name: name,
+    meta:{legalName:"",gstin:"",address:"",mfgLocation:"",contactPerson:"",salesRep:"",phone:"",website:"",years:"",
+          existName:"",existPhone:"",existDistrict:""},
+    investment:{total:"",inventory:"",branding:"",registration:"",transport:"",deposit:"",gst:"",other:"",
+                gstIncluded:"", gstInvoice:"", paymentMethod:"", notes:""},
+    products:[],
+    territory:{district:"",state:"",type:"",agreementMentions:"",canAppoint:"",directSells:"",onlineSales:"",notes:""},
+    target:{monthly:"",monthlyPurchase:"",quarterly:"",annual:"",minMonthlyOrder:"",failureConsequence:"",notes:""},
+    reorder:{minValue:"",moq:"",price:"",scheme:"",creditTerms:"",deliveryTime:"",transportCharges:"",freeCond:"",notes:""},
+    transport:{firstOrder:"",reorderTransport:"",minFreeOrder:"",damageResp:"",notes:""},
+    returns:{leakage:"",breakage:"",mfgDefect:"",nearExpiry:"",expiredReturn:"",slowMoving:"",unsold:"",claimWindow:"",notes:""},
+    marketing:{lightBoard:"",posters:"",shopBranding:"",pamphlets:"",visitingCards:"",digitalCreatives:"",socialMedia:"",
+               localAd:"",salesmanVisits:"",productTraining:"",salesTraining:"",estValue:"",notes:""},
+    staff:{companySalesman:"",distributorSalesman:"",deliveryStaff:"",training:"",marketVisit:"",leadSupport:"",
+           salary:"",petrol:"",incentive:"",otherExpense:"",notes:""},
+    credit:{terms:"",limit:"",notes:""},
+    exit:{canCancel:"",noticePeriod:"",stockReturn:"",depositRefund:"",penalty:"",territoryProcess:"",terminationTerms:"",notes:""},
+    documents:{gstCert:"",companyReg:"",distAgreement:"",catalogue:"",priceList:"",stockList:"",gstInvoiceDoc:"",
+               territoryLetter:"",returnPolicyDoc:"",damagePolicyDoc:"",paymentDetails:"",existingDistRef:""},
+    simulator:{monthlySales:"",grossMarginPct:"",marginSource:"manual",transport:"",salary:"",petrol:"",warehouse:"",phone:"",marketing:"",other:""},
+    scores:{marketFit:5,reliability:5,marketingSup:5,creditTerms:5},
+    paymentSafety:{legalNameVerified:"",gstinVerified:"",bankNameMatches:"",notPersonalAccount:"",proformaInvoice:"",
+                   gstInvoiceReq:"",agreementReceived:"",territoryWritten:"",inventoryListConfirmed:"",investmentBreakupConfirmed:"",
+                   refundExitConfirmed:"",returnDamageExpiryConfirmed:"",noHiddenCharges:"",recipientVerified:"",finalAmountVerified:"",notes:""},
+    meeting:{answers:{}, customQuestions:[]},
+  };
+}
+/* Deep-merges a freshly-created default object with a loaded (possibly older) saved object,
+   so new fields introduced by app upgrades never crash on old localStorage data. */
+function deepMergeDefaults(base, loaded){
+  if(loaded===undefined || loaded===null) return base;
+  if(Array.isArray(base)) return Array.isArray(loaded) ? loaded : base;
+  if(typeof base === "object"){
+    const out = {...base};
+    Object.keys(base).forEach(k=>{ out[k] = deepMergeDefaults(base[k], loaded[k]); });
+    Object.keys(loaded).forEach(k=>{ if(!(k in out)) out[k]=loaded[k]; });
+    return out;
+  }
+  return loaded;
+}
+function migrateCompany(loadedC, name){
+  return deepMergeDefaults(blankCompany(name), loadedC);
+}
+function demoCompany1(){
+  const c = blankCompany("Company 1");
+  c.meta = {legalName:"Shree Balaji Home Products Pvt Ltd",gstin:"09ABCDE1234F1Z5",address:"Industrial Area, Meerut, UP",
+    mfgLocation:"Meerut, UP",contactPerson:"Rakesh Sharma",salesRep:"Vinod Kumar",phone:"9876543210",website:"www.example1.com",years:"6",
+    existName:"Suresh Traders",existPhone:"9812345670",existDistrict:"Muzaffarnagar"};
+  c.investment = {total:"31000",inventory:"22000",branding:"3000",registration:"2000",transport:"1500",deposit:"1500",gst:"1000",other:"0",
+    gstIncluded:"Yes",gstInvoice:"Yes",paymentMethod:"Company Bank Account",notes:"DEMO DATA"};
+  c.products = [
+    {id:uid(),name:"Toilet Cleaner 500ml",category:"Home Care",packSize:"500ml",qty:"100",mrp:"100",distPrice:"60",gstPct:"18",gstType:"Inclusive",
+     schemeType:"Free Units",schemeFreeUnits:"5",scheme:"5 free units on 100",retailPrice:"70"},
+    {id:uid(),name:"Dish Wash Bar",category:"Home Care",packSize:"250g",qty:"150",mrp:"35",distPrice:"20",gstPct:"18",gstType:"Inclusive",
+     schemeType:"None",scheme:"-",retailPrice:"24"}
+  ];
+  c.territory = {district:"Baghpat",state:"Uttar Pradesh",type:"Exclusive",agreementMentions:"Yes",canAppoint:"No",directSells:"No",onlineSales:"No",notes:"DEMO DATA"};
+  c.target = {monthly:"50000",monthlyPurchase:"45000",quarterly:"150000",annual:"600000",minMonthlyOrder:"20000",failureConsequence:"Recommended",notes:""};
+  c.reorder = {minValue:"15000",moq:"200 units",price:"Same as first order",scheme:"3% on reorder above ₹20,000",creditTerms:"7 days",deliveryTime:"3-4 days",transportCharges:"Free above ₹15,000",freeCond:"Above ₹15,000",notes:""};
+  c.transport = {firstOrder:"Free",reorderTransport:"Conditional",minFreeOrder:"15000",damageResp:"Company",notes:""};
+  c.returns = {leakage:"Yes",breakage:"Yes",mfgDefect:"Yes",nearExpiry:"Conditional",expiredReturn:"No",slowMoving:"No",unsold:"No",claimWindow:"15 days",notes:""};
+  c.marketing = {lightBoard:"Free",posters:"Free",shopBranding:"Free",pamphlets:"Paid",visitingCards:"Free",digitalCreatives:"Not Available",
+    socialMedia:"Not Available",localAd:"Not Available",salesmanVisits:"Free",productTraining:"Free",salesTraining:"Not Available",estValue:"3000",notes:""};
+  c.staff = {companySalesman:"Yes",distributorSalesman:"No",deliveryStaff:"Company",training:"Yes",marketVisit:"Monthly",leadSupport:"No",
+    salary:"0",petrol:"1500",incentive:"0",otherExpense:"500",notes:""};
+  c.credit = {terms:"7 Days",limit:"20000",notes:""};
+  c.exit = {canCancel:"Yes",noticePeriod:"30 days",stockReturn:"Conditional",depositRefund:"Conditional",penalty:"None specified",territoryProcess:"Written notice required",terminationTerms:"Not fully clear",notes:""};
+  c.documents = {gstCert:"Verified",companyReg:"Verified",distAgreement:"Not Verified",catalogue:"Verified",priceList:"Verified",
+    stockList:"Verified",gstInvoiceDoc:"Verified",territoryLetter:"Not Verified",returnPolicyDoc:"Not Available",
+    damagePolicyDoc:"Verified",paymentDetails:"Verified",existingDistRef:"Verified"};
+  c.simulator = {monthlySales:"100000",grossMarginPct:"15",transport:"1000",salary:"0",petrol:"1500",warehouse:"0",phone:"500",marketing:"1000",other:"1000"};
+  c.scores = {marketFit:7,reliability:7,marketingSup:6,creditTerms:6};
+  return c;
+}
+function demoCompany2(){
+  const c = blankCompany("Company 2");
+  c.meta = {legalName:"Nova Consumer Products Ltd (DEMO)",gstin:"07XXXXX9988G1Z2",address:"Sector 63, Noida, UP",
+    mfgLocation:"Noida, UP",contactPerson:"Amit Verma",salesRep:"Priya Singh",phone:"9911223344",website:"www.example2.com",years:"2",
+    existName:"Not shared",existPhone:"",existDistrict:""};
+  c.investment = {total:"45000",inventory:"30000",branding:"5000",registration:"3000",transport:"0",deposit:"5000",gst:"2000",other:"0",
+    gstIncluded:"Not Clear",gstInvoice:"Not Clear",paymentMethod:"Personal Account",notes:"DEMO DATA"};
+  c.products = [
+    {id:uid(),name:"Floor Cleaner 1L",category:"Home Care",packSize:"1L",qty:"80",mrp:"150",distPrice:"95",gstPct:"18",gstType:"Unknown",
+     schemeType:"None",scheme:"-",retailPrice:"110"},
+  ];
+  c.territory = {district:"Baghpat",state:"Uttar Pradesh",type:"Not Clear",agreementMentions:"No",canAppoint:"Not Clear",directSells:"Yes",onlineSales:"Yes",notes:"DEMO DATA"};
+  c.target = {monthly:"80000",monthlyPurchase:"80000",quarterly:"250000",annual:"1000000",minMonthlyOrder:"40000",failureConsequence:"Compulsory",notes:""};
+  c.reorder = {minValue:"40000",moq:"400 units",price:"Higher than first order",scheme:"None on reorder",creditTerms:"Cash only",deliveryTime:"7-10 days",transportCharges:"Paid",freeCond:"None",notes:""};
+  c.transport = {firstOrder:"Free",reorderTransport:"Paid",minFreeOrder:"N/A",damageResp:"Distributor",notes:""};
+  c.returns = {leakage:"Conditional",breakage:"No",mfgDefect:"Conditional",nearExpiry:"No",expiredReturn:"No",slowMoving:"No",unsold:"No",claimWindow:"Not Clear",notes:""};
+  c.marketing = {lightBoard:"Paid",posters:"Paid",shopBranding:"Not Available",pamphlets:"Not Available",visitingCards:"Free",digitalCreatives:"Not Available",
+    socialMedia:"Not Available",localAd:"Not Available",salesmanVisits:"Not Available",productTraining:"Not Available",salesTraining:"Not Available",estValue:"0",notes:""};
+  c.staff = {companySalesman:"No",distributorSalesman:"Yes",deliveryStaff:"Distributor",training:"No",marketVisit:"Not Available",leadSupport:"No",
+    salary:"8000",petrol:"2000",incentive:"1000",otherExpense:"500",notes:""};
+  c.credit = {terms:"Cash",limit:"0",notes:""};
+  c.exit = {canCancel:"Not Clear",noticePeriod:"Not Clear",stockReturn:"No",depositRefund:"No",penalty:"₹10,000 flat",territoryProcess:"Not Clear",terminationTerms:"Not Clear",notes:""};
+  c.documents = {gstCert:"Verified",companyReg:"Not Verified",distAgreement:"Not Available",catalogue:"Verified",priceList:"Verified",
+    stockList:"Not Verified",gstInvoiceDoc:"Not Available",territoryLetter:"Not Available",returnPolicyDoc:"Not Available",
+    damagePolicyDoc:"Not Available",paymentDetails:"Not Verified",existingDistRef:"Not Available"};
+  c.simulator = {monthlySales:"120000",grossMarginPct:"12",transport:"2500",salary:"8000",petrol:"2000",warehouse:"0",phone:"500",marketing:"500",other:"1000"};
+  c.scores = {marketFit:5,reliability:3,marketingSup:2,creditTerms:2};
+  return c;
+}
+
+function freshState(){
+  return {
+    activeTab:"dashboard",
+    activeCompany:"c1",
+    c1: blankCompany("Company 1"),
+    c2: blankCompany("Company 2"),
+    meetingIndex:{c1:0,c2:0},
+    openSections:{},
+  };
+}
+let state = freshState();
+
+/* ---------- generic UI helpers ---------- */
+function el(html){ const d=document.createElement("div"); d.innerHTML=html.trim(); return d.firstElementChild; }
+function showToast(msg){
+  const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),1600);
+}
+function curCompany(){ return state[state.activeCompany]; }
+function otherCompanyKey(){ return state.activeCompany==="c1"?"c2":"c1"; }
+
+/* ---------- field renderers ---------- */
+function fieldText(section, key, label, explain, placeholder, opts){
+  opts = opts||{};
+  const raw = curCompany()[section][key] || "";
+  const val = esc(raw);
+  const type = opts.type||"text";
+  const isCurrency = opts.currency;
+  return `
+  <div class="field">
+    <label>${label}</label>
+    ${explain?`<div class="explain">${explain}</div>`:""}
+    <div class="${isCurrency?'currency-prefix':''}">
+      ${isCurrency?'<span>₹</span>':''}
+      ${opts.textarea?
+        `<textarea data-sec="${section}" data-key="${key}" data-kind="text">${val}</textarea>`
+        :`<input type="${type}" inputmode="${type==='number'?'decimal':'text'}" data-sec="${section}" data-key="${key}" data-kind="text" value="${val}" placeholder="${esc(placeholder||'')}">`}
+    </div>
+  </div>`;
+}
+function fieldPills(section, key, label, explain, options, colorMap){
+  const val = curCompany()[section][key] || "";
+  colorMap = colorMap || {};
+  return `
+  <div class="field">
+    <label>${label}</label>
+    ${explain?`<div class="explain">${explain}</div>`:""}
+    <div class="pillgroup" data-sec="${section}" data-key="${key}" data-kind="pill">
+      ${options.map(o=>`<button type="button" data-val="${esc(o)}" class="${val===o?'sel '+(colorMap[o]||''):''}">${esc(o)}</button>`).join("")}
+    </div>
+  </div>`;
+}
+function notesField(section){
+  return fieldText(section,"notes","Meeting Notes","Salesman ne kya bola, likhein. (Written proof mila? Photo attach hui?)","Notes likhein...",{textarea:true})
+    + photoFieldHtml("section", section);
+}
+
+/* ---------- Photo proof: camera capture, compressed client-side before storage ----------
+   Storage is a single JSON blob with a 5MB cap, so every photo is downsized + re-encoded
+   as JPEG before it ever touches state — this keeps a typical photo to roughly 40-150KB. */
+const PHOTO_MAX_DIM = 700;
+const PHOTO_QUALITY = 0.5;
+function compressImageFile(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      const img = new Image();
+      img.onload = ()=>{
+        let w=img.width, h=img.height;
+        if(w>=h && w>PHOTO_MAX_DIM){ h=Math.round(h*PHOTO_MAX_DIM/w); w=PHOTO_MAX_DIM; }
+        else if(h>w && h>PHOTO_MAX_DIM){ w=Math.round(w*PHOTO_MAX_DIM/h); h=PHOTO_MAX_DIM; }
+        const canvas = document.createElement("canvas");
+        canvas.width=w; canvas.height=h;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img,0,0,w,h);
+        resolve(canvas.toDataURL("image/jpeg", PHOTO_QUALITY));
+      };
+      img.onerror = ()=>reject(new Error("Image load failed"));
+      img.src = reader.result;
+    };
+    reader.onerror = ()=>reject(new Error("File read failed"));
+    reader.readAsDataURL(file);
+  });
+}
+/* Resolves the actual array to push/remove photos from, for either a per-section
+   notes field or a per-question Meeting Mode answer. */
+function getPhotoArray(kind, key){
+  const c = curCompany();
+  if(kind==="section"){
+    if(!c[key]) return [];
+    if(!c[key].photos) c[key].photos = [];
+    return c[key].photos;
+  }
+  if(kind==="meeting"){
+    const i = Number(key);
+    if(!c.meeting.answers[i]) c.meeting.answers[i] = {status:"",note:""};
+    if(!c.meeting.answers[i].photos) c.meeting.answers[i].photos = [];
+    return c.meeting.answers[i].photos;
+  }
+  return [];
+}
+function photoFieldHtml(kind, key){
+  const photos = getPhotoArray(kind, key);
+  const inputId = `photoInput-${kind}-${esc(String(key))}`;
+  return `
+  <div class="field" style="margin-top:10px;">
+    <label>Photo Proof (optional)</label>
+    <input type="file" accept="image/*" capture="environment" id="${inputId}" data-photocapture data-photokind="${kind}" data-photokey="${esc(String(key))}" style="display:none;">
+    <button type="button" class="btn-secondary" data-photobtn="${inputId}" style="width:auto;padding:9px 14px;">📷 Photo Attach Karein${photos.length?` (${photos.length} attached)`:""}</button>
+    ${photos.length?`<div class="photo-strip">
+      ${photos.map(p=>{
+        const src = photoCache.get(p.id);
+        if(src===undefined || src===null) ensurePhotoLoaded(p.id); // triggers async fetch + re-render once ready
+        const thumbInner = src && src!=="loading" ? `<img src="${src}" alt="proof photo">`
+          : src==="loading" ? `<div class="photo-thumb-loading">…</div>`
+          : `<div class="photo-thumb-missing">⚠️</div>`;
+        return `
+        <div class="photo-card">
+          <div class="photo-thumb">${thumbInner}</div>
+          <div class="photo-meta">
+            <input type="text" class="photo-caption" placeholder="Ye kis cheez ka hai? e.g. Territory letter, Agreement page 1" value="${esc(p.caption||"")}" data-photocaption="${p.id}" data-photokind="${kind}" data-photokey="${esc(String(key))}">
+            <div class="photo-ts">${new Date(p.ts).toLocaleString("en-IN",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})}</div>
+          </div>
+          <button type="button" class="photo-del" data-photodel="${p.id}" data-photokind="${kind}" data-photokey="${esc(String(key))}" title="Remove">✕</button>
+        </div>`;
+      }).join("")}
+    </div>`:""}
+    <div class="explain" style="margin-top:4px;">Photos is browser/device mein save hoti hain, kahin bheji nahi jaatin. Jitni chahe utni add karein.</div>
+  </div>`;
+}
+function wirePhotoCapture(){
+  document.querySelectorAll("[data-photobtn]").forEach(b=>b.addEventListener("click",()=>{
+    const inp = document.getElementById(b.dataset.photobtn);
+    if(inp) inp.click();
+  }));
+  document.querySelectorAll("[data-photocapture]").forEach(inp=>{
+    inp.addEventListener("change", async ()=>{
+      const file = inp.files && inp.files[0];
+      if(!file) return;
+      const arr = getPhotoArray(inp.dataset.photokind, inp.dataset.photokey);
+      try{
+        const dataUrl = await compressImageFile(file);
+        const id = uid();
+        photoCache.set(id, dataUrl);
+        arr.push({id, caption:"", ts:Date.now()});
+        render(); // shows immediately from the in-memory cache
+        scheduleSave(); // saves the (now tiny — id/caption/ts only) state metadata
+        try{ await savePhotoBlob(id, dataUrl); }
+        catch(e){ showToast("⚠️ Photo apne slot mein save nahi ho payi — dobara try karein"); }
+      }catch(e){
+        showToast("Photo attach nahi ho payi: "+e.message);
+      }
+      inp.value = "";
+    });
+  });
+  document.querySelectorAll("[data-photocaption]").forEach(inp=>{
+    inp.addEventListener("input", ()=>{
+      const arr = getPhotoArray(inp.dataset.photokind, inp.dataset.photokey);
+      const photo = arr.find(p=>p.id===inp.dataset.photocaption);
+      if(photo){ photo.caption = inp.value; scheduleSave(); }
+    });
+  });
+  document.querySelectorAll("[data-photodel]").forEach(b=>b.addEventListener("click",()=>{
+    const arr = getPhotoArray(b.dataset.photokind, b.dataset.photokey);
+    const idx = arr.findIndex(p=>p.id===b.dataset.photodel);
+    if(idx>=0){
+      const id = arr[idx].id;
+      arr.splice(idx,1);
+      photoCache.delete(id);
+      scheduleSave();
+      render();
+      deletePhotoBlob(id).catch(()=>{});
+    }
+  }));
+}
+
+/* ---------- generic field click/input binding (delegated) ---------- */
+function bindFieldEvents(container){
+  container.querySelectorAll('[data-kind="text"]').forEach(inp=>{
+    inp.addEventListener("input", ()=>{
+      const sec=inp.dataset.sec, key=inp.dataset.key;
+      curCompany()[sec][key] = inp.value;
+      scheduleSave();
+      refreshDynamicBits();
+    });
+  });
+  container.querySelectorAll('[data-kind="pill"]').forEach(group=>{
+    group.querySelectorAll("button").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const sec=group.dataset.sec, key=group.dataset.key;
+        curCompany()[sec][key] = btn.dataset.val;
+        scheduleSave();
+        render();
+      });
+    });
+  });
+}
+function refreshDynamicBits(){
+  // lightweight refresh of computed numbers without full re-render (for smooth typing)
+  const rc = document.getElementById("recalc-target");
+  if(rc) rc.outerHTML = renderTargetCalc();
+  const inv = document.getElementById("recalc-investment");
+  if(inv) inv.outerHTML = renderInvestmentCheck();
+  const ivs = document.getElementById("recalc-invvsstock");
+  if(ivs) ivs.outerHTML = renderInvestmentVsStock();
+  const pc = document.getElementById("recalc-products");
+  if(pc){
+    document.querySelectorAll(".product-card").forEach(syncProductCardCalc);
+    const totBox = document.getElementById("products-totals");
+    if(totBox) totBox.outerHTML = renderProductTotals();
+  }
+}
+
+/* ================= ACCORDION SECTION WRAPPER ================= */
+function accordionWrap(id, title, sub, bodyHtml, badge){
+  const open = !!state.openSections[id];
+  return `
+  <div class="accordion ${open?'open':''}" data-accordion="${id}">
+    <div class="accordion-head" data-toggle="${id}">
+      <div class="accordion-head-left">
+        <h4>${title}</h4>
+        ${sub?`<div class="sub">${sub}</div>`:""}
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        ${badge||""}
+        <svg class="accordion-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    </div>
+    <div class="accordion-body">${bodyHtml}</div>
+  </div>`;
+}
+
+/* ================= COMPANY DETAIL PAGE SECTIONS ================= */
+
+function renderMetaSection(){
+  const m = "meta";
+  return `
+  ${fieldText(m,"legalName","Legal Company Name","Registered legal naam, jo agreement me likha hoga.","e.g. XYZ Pvt Ltd")}
+  ${fieldText(m,"gstin","GSTIN","Company ka GST number — verify kar sakte hain GST portal par.","15-digit GSTIN")}
+  ${fieldText(m,"address","Registered Address","",null,{textarea:true})}
+  ${fieldText(m,"mfgLocation","Manufacturing Location","",null)}
+  ${fieldText(m,"contactPerson","Contact Person","")}
+  ${fieldText(m,"salesRep","Sales Representative Name","")}
+  ${fieldText(m,"phone","Phone Number","",null,{type:"tel"})}
+  ${fieldText(m,"website","Website","")}
+  ${fieldText(m,"years","Years in Business","",null,{type:"number"})}
+  <div class="section-title" style="margin-top:18px;">Existing Distributor Contact</div>
+  <div class="explain" style="margin:-6px 2px 6px;">Company ke claims verify karne ke liye ek existing distributor se baat karein.</div>
+  ${fieldText(m,"existName","Distributor Name","")}
+  ${fieldText(m,"existPhone","Phone","",null,{type:"tel"})}
+  ${fieldText(m,"existDistrict","District","")}
+  ${notesField(m)}
+  `;
+}
+
+function renderInvestmentCheck(){
+  const inv = curCompany().investment;
+  const total = num(inv.total);
+  const breakdown = num(inv.inventory)+num(inv.branding)+num(inv.registration)+num(inv.transport)+num(inv.deposit)+num(inv.gst)+num(inv.other);
+  const match = total>0 && Math.abs(total-breakdown)<1;
+  const bad = total>0 && !match;
+  return `<div id="recalc-investment">
+    <div class="totals-strip">
+      <div class="t"><div class="l">Total Breakdown</div><div class="v tabular">${inr(breakdown)}</div></div>
+      <div class="t"><div class="l">Total Investment</div><div class="v tabular">${inr(total)}</div></div>
+    </div>
+    ${total>0 ? (match?
+      `<div class="alert good">✓ Investment breakup verified.</div>`:
+      `<div class="alert bad">⚠️ Investment breakup match nahi kar raha. Difference: ${inr(Math.abs(total-breakdown))}</div>`)
+      : ""}
+    ${inv.paymentMethod==="Personal Account"?`<div class="alert bad">🚩 RED FLAG: Personal account me payment karne se pehle company authorization verify karein.</div>`:""}
+  </div>`;
+}
+
+function renderInvestmentVsStock(){
+  const c = curCompany();
+  const inv = c.investment;
+  const total = num(inv.total);
+  const w = weightedMargins(c.products);
+  const nonInventory = num(inv.branding)+num(inv.registration)+num(inv.transport)+num(inv.deposit)+num(inv.gst)+num(inv.other);
+  const unrepresented = total>0 ? Math.max(0, total - w.totalEffCost - nonInventory) : 0;
+  return `
+  <div id="recalc-invvsstock">
+  <div class="section-title" style="margin-top:18px;">Investment vs Stock Value</div>
+  <div class="explain" style="margin:-4px 2px 8px;">Investment amount is NOT assumed to equal inventory value — every rupee should be accounted for.</div>
+  <div class="result-box">
+    <div class="result-row"><span>Investment Paid</span><span class="v tabular">${inr(total)}</span></div>
+    <div class="result-row"><span>Inventory Cost (from Products, effective)</span><span class="v tabular">${inr(w.totalEffCost)}</span></div>
+    <div class="result-row"><span>Branding + Registration + Transport + Deposit + GST + Other</span><span class="v tabular">${inr(nonInventory)}</span></div>
+    <div class="result-row total"><span>Unrepresented Amount</span><span class="tabular">${inr(unrepresented)}</span></div>
+  </div>
+  ${unrepresented>1?`<div class="alert bad">⚠️ ${inr(unrepresented)} of investment is not represented by inventory or any listed charge — ask the company to account for this.</div>`:
+    (total>0 && c.products.length>0?`<div class="alert good">✓ Investment appears represented by inventory + listed charges.</div>`:"")}
+  </div>`;
+}
+function renderInvestmentSection(){
+  const s="investment";
+  return `
+  ${fieldText(s,"total","Total Investment","Aapko total kitna paisa lagana hai?","₹31,000",{currency:true,type:"number"})}
+  <div class="section-title" style="margin-top:18px;">Breakdown</div>
+  ${fieldText(s,"inventory","Product Inventory","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"branding","Branding","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"registration","Registration","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"transport","Transportation","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"deposit","Security Deposit","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"gst","GST","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"other","Other Charges","",null,{currency:true,type:"number"})}
+  ${renderInvestmentCheck()}
+  ${renderInvestmentVsStock()}
+  ${fieldPills(s,"gstIncluded","GST included hai?","",["Yes","No","Not Clear"])}
+  ${fieldPills(s,"gstInvoice","GST Invoice milega?","",["Yes","No","Not Clear"])}
+  ${fieldPills(s,"paymentMethod","Payment Method","Paisa kis method se dena hai?",["Company Bank Account","UPI","Cash","Personal Account","Other"],{"Personal Account":"bad"})}
+  ${notesField(s)}
+  `;
+}
+
+/* ---- Products ---- */
+/* GST + Scheme engine — turns listed distributor price into a REAL effective purchase price. */
+function computeEffectivePrice(p){
+  const dp = num(p.distPrice);
+  const gstPct = num(p.gstPct);
+  const qty = num(p.qty) || 1;
+  let grossPrice = dp;
+  let gstUnknown = false;
+  if(p.gstType === "Exclusive"){
+    grossPrice = dp * (1 + gstPct/100);
+  } else if(p.gstType === "Inclusive"){
+    grossPrice = dp; // do NOT add GST again
+  } else {
+    grossPrice = dp;
+    gstUnknown = true; // GST treatment not specified — result cannot be confirmed
+  }
+  const st = p.schemeType || "None";
+  let effUnitPrice = grossPrice;
+  let schemeKnown = true;
+  if(st === "None" || !st){
+    effUnitPrice = grossPrice;
+  } else if(st === "Percentage"){
+    effUnitPrice = grossPrice * (1 - num(p.schemePct)/100);
+  } else if(st === "Flat"){
+    effUnitPrice = Math.max(0, grossPrice - num(p.schemeFlat));
+  } else if(st === "Free Units"){
+    const free = num(p.schemeFreeUnits);
+    const totalUnits = qty + free;
+    effUnitPrice = totalUnits>0 ? (qty*grossPrice)/totalUnits : grossPrice;
+  } else if(st === "Buy X Get Y"){
+    const X = num(p.schemeBuyX), Y = num(p.schemeGetY);
+    if(X>0 && Y>0){
+      const freeSets = Math.floor(qty/X);
+      const totalUnits = qty + freeSets*Y;
+      effUnitPrice = totalUnits>0 ? (qty*grossPrice)/totalUnits : grossPrice;
+    } else { schemeKnown = false; }
+  } else { // "Manual / Other" — free text scheme field, cannot be computed
+    schemeKnown = false;
+  }
+  return {grossPrice, effUnitPrice, gstUnknown, schemeKnown};
+}
+function productCalc(p){
+  const qty=num(p.qty), mrp=num(p.mrp), dp=num(p.distPrice), rsp=num(p.retailPrice);
+  const eff = computeEffectivePrice(p);
+  const effPrice = eff.effUnitPrice;
+  // Margin/Markup are always computed off the REAL effective cost, not the listed price.
+  const distGP = rsp-effPrice;
+  const distMarginPct = rsp>0? (distGP/rsp*100):0;
+  const distMarkupPct = effPrice>0? (distGP/effPrice*100):0;
+  const retGP = mrp-rsp;
+  const retMarginPct = mrp>0? (retGP/mrp*100):0;
+  const listedStockValue = qty*dp;              // what the price list says
+  const stockValue = qty*effPrice;               // total EFFECTIVE inventory cost (GST + scheme adjusted)
+  const mrpValue = qty*mrp;
+  const totalDistGP = qty*distGP;
+  const totalRetGP = qty*retGP;
+  // validation flags for this product row
+  const warnings = [];
+  if(dp<0||mrp<0||rsp<0||qty<0) warnings.push("Negative value entered");
+  if(mrp>0 && rsp>mrp) warnings.push("Retailer price is higher than MRP");
+  if(effPrice>0 && rsp>0 && effPrice>rsp) warnings.push("Distributor price is higher than retailer selling price");
+  if(distMarginPct>100||distMarginPct<-100) warnings.push("Margin outside realistic range");
+  if(!mrp) warnings.push("MRP missing");
+  return {distGP,distMarginPct,distMarkupPct,retGP,retMarginPct,stockValue,listedStockValue,mrpValue,totalDistGP,totalRetGP,
+          effPrice,grossPrice:eff.grossPrice,gstUnknown:eff.gstUnknown,schemeKnown:eff.schemeKnown,warnings};
+}
+const SCHEME_TYPES = ["None","Percentage","Flat","Free Units","Buy X Get Y","Manual / Other"];
+/* Weighted margin — value-weighted, NOT a simple average of per-product percentages. */
+function weightedMargins(products){
+  let totalGP=0, totalRSPValue=0, totalEffCost=0, totalMRPValue=0, totalUnits=0, totalListedValue=0;
+  products.forEach(p=>{
+    const c = productCalc(p);
+    const qty = num(p.qty);
+    totalUnits += qty;
+    totalGP += c.totalDistGP;
+    totalRSPValue += qty*num(p.retailPrice);
+    totalEffCost += c.stockValue;
+    totalListedValue += c.listedStockValue;
+    totalMRPValue += c.mrpValue;
+  });
+  const weightedMarginPct = totalRSPValue>0 ? (totalGP/totalRSPValue*100) : 0;
+  const weightedMarkupPct = totalEffCost>0 ? (totalGP/totalEffCost*100) : 0;
+  return {weightedMarginPct, weightedMarkupPct, totalGP, totalRSPValue, totalEffCost, totalListedValue, totalMRPValue, totalUnits};
+}
+function renderProductCard(p, idx){
+  const gstType = p.gstType || "Unknown";
+  const schemeType = p.schemeType || "None";
+  return `
+  <div class="product-card" data-pid="${p.id}">
+    <div class="product-card-top">
+      <input type="text" value="${esc(p.name)}" placeholder="Product Name" data-pfield="name">
+      <button class="icon-btn" data-delp="${p.id}" title="Delete">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6h16z"/></svg>
+      </button>
+    </div>
+    <div class="product-grid">
+      <div class="f"><label>Category</label><input type="text" value="${esc(p.category)}" data-pfield="category"></div>
+      <div class="f"><label>Pack Size</label><input type="text" value="${esc(p.packSize)}" data-pfield="packSize"></div>
+      <div class="f"><label>Quantity</label><input type="number" value="${esc(p.qty)}" data-pfield="qty"></div>
+      <div class="f"><label>MRP (₹)</label><input type="number" value="${esc(p.mrp)}" data-pfield="mrp"></div>
+      <div class="f"><label>Listed Distributor Price (₹)</label><input type="number" value="${esc(p.distPrice)}" data-pfield="distPrice"></div>
+      <div class="f"><label>Retailer Selling Price (₹)</label><input type="number" value="${esc(p.retailPrice)}" data-pfield="retailPrice"></div>
+      <div class="f"><label>GST %</label><input type="number" value="${esc(p.gstPct)}" data-pfield="gstPct"></div>
+      <div class="f">
+        <label>GST Treatment</label>
+        <select data-pfield="gstType">
+          ${["Unknown","Inclusive","Exclusive"].map(o=>`<option value="${o}" ${gstType===o?"selected":""}>${o==="Unknown"?"Unknown / Not Told":o+" of GST"}</option>`).join("")}
+        </select>
+      </div>
+    </div>
+    <div class="field" style="margin-top:12px;">
+      <label>Scheme / Discount Type</label>
+      <select data-pfield="schemeType" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);">
+        ${SCHEME_TYPES.map(o=>`<option value="${o}" ${schemeType===o?"selected":""}>${o}</option>`).join("")}
+      </select>
+    </div>
+    <div class="product-grid" style="margin-top:9px;">
+      ${schemeType==="Percentage"?`<div class="f"><label>Discount %</label><input type="number" value="${esc(p.schemePct)}" data-pfield="schemePct"></div>`:""}
+      ${schemeType==="Flat"?`<div class="f"><label>Flat Discount / Unit (₹)</label><input type="number" value="${esc(p.schemeFlat)}" data-pfield="schemeFlat"></div>`:""}
+      ${schemeType==="Free Units"?`<div class="f"><label>Free Units (on this qty)</label><input type="number" value="${esc(p.schemeFreeUnits)}" data-pfield="schemeFreeUnits"></div>`:""}
+      ${schemeType==="Buy X Get Y"?`<div class="f"><label>Buy X</label><input type="number" value="${esc(p.schemeBuyX)}" data-pfield="schemeBuyX"></div><div class="f"><label>Get Y Free</label><input type="number" value="${esc(p.schemeGetY)}" data-pfield="schemeGetY"></div>`:""}
+      ${schemeType==="Manual / Other"?`<div class="f" style="grid-column:1/-1;"><label>Describe Scheme</label><input type="text" value="${esc(p.scheme)}" data-pfield="scheme" placeholder="e.g. 5% extra on 100 units"></div>`:""}
+    </div>
+    <div class="product-calc" data-calcbox>
+      ${productCalcHtml(p)}
+    </div>
+  </div>`;
+}
+function productCalcHtml(p){
+  const c = productCalc(p);
+  let html = `
+    <div class="c"><span>Effective Purchase Price/Unit</span><b>${inr(c.effPrice)}</b></div>
+    <div class="c"><span>Distributor Margin</span><b>${pct(c.distMarginPct)}</b></div>
+    <div class="c"><span>Distributor Markup</span><b>${pct(c.distMarkupPct)}</b></div>
+    <div class="c"><span>Retailer Margin</span><b>${pct(c.retMarginPct)}</b></div>
+    <div class="c"><span>Gross Profit / Unit</span><b>${inr(c.distGP)}</b></div>
+    <div class="c"><span>Total Effective Inventory Cost</span><b>${inr(c.stockValue)}</b></div>
+    <div class="c"><span>Total MRP Value</span><b>${inr(c.mrpValue)}</b></div>
+    <div class="c"><span>Total Potential Gross Profit</span><b>${inr(c.totalDistGP)}</b></div>
+  `;
+  let warn = "";
+  if(c.gstUnknown) warn += `<div class="alert warn" style="margin-top:8px;">GST treatment unclear — actual margin cannot be confirmed.</div>`;
+  if(!c.schemeKnown) warn += `<div class="alert warn" style="margin-top:8px;">Scheme entered as text — effective cost not automatically calculated.</div>`;
+  if(c.warnings.length) warn += c.warnings.map(w=>`<div class="alert bad" style="margin-top:8px;">⚠️ ${esc(w)}</div>`).join("");
+  return html + warn;
+}
+function syncProductCardCalc(cardEl){
+  const pid = cardEl.dataset.pid;
+  const p = curCompany().products.find(x=>x.id===pid);
+  if(!p) return;
+  cardEl.querySelector("[data-calcbox]").innerHTML = productCalcHtml(p);
+}
+function renderProductTotals(){
+  const products = curCompany().products;
+  const w = weightedMargins(products);
+  const gstUnknownCount = products.filter(p=>computeEffectivePrice(p).gstUnknown).length;
+  const schemeUnknownCount = products.filter(p=>!computeEffectivePrice(p).schemeKnown).length;
+  return `<div id="products-totals">
+  <div class="totals-strip">
+    <div class="t"><div class="l">Total Units</div><div class="v tabular">${w.totalUnits}</div></div>
+    <div class="t"><div class="l">Total Effective Inventory Cost</div><div class="v tabular">${inr(w.totalEffCost)}</div></div>
+    <div class="t"><div class="l">Total MRP Value</div><div class="v tabular">${inr(w.totalMRPValue)}</div></div>
+    <div class="t"><div class="l">Total Potential Gross Profit</div><div class="v tabular">${inr(w.totalGP)}</div></div>
+    <div class="t"><div class="l">Weighted Distributor Margin</div><div class="v tabular">${pct(w.weightedMarginPct)}</div></div>
+    <div class="t"><div class="l">Weighted Distributor Markup</div><div class="v tabular">${pct(w.weightedMarkupPct)}</div></div>
+  </div>
+  <div class="explain" style="margin-top:8px;">Weighted margin/markup is based on actual stock value of each product — not a plain average of percentages. ${products.length? "Estimated weighted margin based on entered product values.":""}</div>
+  ${gstUnknownCount>0?`<div class="alert warn">GST treatment unclear on ${gstUnknownCount} product(s) — actual margin cannot be fully confirmed.</div>`:""}
+  ${schemeUnknownCount>0?`<div class="alert warn">Scheme entered as text on ${schemeUnknownCount} product(s) — effective cost not automatically calculated for those.</div>`:""}
+  ${w.totalListedValue>0 && Math.abs(w.totalListedValue-w.totalEffCost)>1 ? `<div class="alert good">GST/scheme adjustment changes inventory cost from ${inr(w.totalListedValue)} (listed) to ${inr(w.totalEffCost)} (effective).</div>`:""}
+  </div>`;
+}
+function renderProductsSection(){
+  const products = curCompany().products;
+  return `
+  <div class="explain" style="margin-bottom:8px;">Har product add karein — margin automatic calculate ho jayega.</div>
+  <div id="recalc-products">
+    ${products.map((p,i)=>renderProductCard(p,i)).join("")}
+  </div>
+  <button class="add-product-btn" id="addProductBtn">+ Add Product</button>
+  ${products.length>0?renderProductTotals():`<div class="explain" style="margin-top:10px;">Koi product add nahi hua abhi tak.</div>`}
+  `;
+}
+
+/* Strict hierarchy — never mark territory "safe" from a verbal assurance alone. */
+function territoryTier(t, doc){
+  if(t.canAppoint==="Yes") return {label:"🚫 CRITICAL — company says it can appoint another distributor here",cls:"bad"};
+  if(t.type==="Exclusive" && t.agreementMentions==="Yes" && doc && doc.territoryLetter==="Verified") return {label:"✓ BEST — Exclusive + Written in Agreement + Territory letter verified",cls:"good"};
+  if(t.type==="Exclusive" && t.agreementMentions==="Yes") return {label:"⚠️ MEDIUM — Exclusive & written in agreement, but territory proof document not yet verified",cls:"warn"};
+  if(t.type==="Exclusive") return {label:"⚠️ MEDIUM/HIGH — Exclusive claimed only verbally, not written in agreement",cls:"warn"};
+  if(t.type==="Non-exclusive") return {label:"🔴 HIGH RISK — Non-exclusive territory",cls:"bad"};
+  return {label:"⚠️ UNCLEAR — territory type not specified",cls:"warn"};
+}
+function renderTerritorySection(){
+  const s="territory";
+  const c = curCompany();
+  const t = c.territory;
+  const tier = territoryTier(t, c.documents);
+  return `
+  ${fieldText(s,"district","District","")}
+  ${fieldText(s,"state","State","")}
+  ${fieldPills(s,"type","Territory Type","Company aapke area me doosra distributor appoint karegi ya nahi.",["Exclusive","Non-exclusive","Not Clear"])}
+  ${fieldPills(s,"agreementMentions","Written in Agreement? (Agreement me territory likha hai?)","",["Yes","No"])}
+  ${fieldPills(s,"canAppoint","Company doosra distributor appoint kar sakti hai?","",["Yes","No","Not Clear"])}
+  ${fieldPills(s,"directSells","Company directly territory me bechti hai (direct sales)?","",["Yes","No","Not Clear"])}
+  ${fieldPills(s,"onlineSales","Online sales territory me hoti hai?","",["Yes","No","Not Clear"])}
+  <div class="alert ${tier.cls}">${tier.label}</div>
+  <div class="explain" style="margin-top:6px;">Hierarchy: Best = Exclusive + Written + Territory letter verified &nbsp;→&nbsp; Medium = Exclusive but verbal/unverified &nbsp;→&nbsp; High Risk = Non-exclusive &nbsp;→&nbsp; Critical = Company can appoint another distributor.</div>
+  ${notesField(s)}
+  `;
+}
+
+function renderTargetCalc(){
+  const c = curCompany();
+  const t = c.target;
+  const monthly = num(t.monthly);
+  const daily = monthly>0 ? monthly/26 : 0;
+  const weekly = monthly>0 ? monthly/4.33 : 0;
+  const quarterlyDerived = monthly>0 ? monthly*3 : 0;
+  const annualDerived = monthly>0 ? monthly*12 : 0;
+  const expected = num(c.simulator.monthlySales);
+  return `<div id="recalc-target">
+    ${monthly>0?`<div class="result-box">
+      <div class="result-row"><span>Required Daily Average (26 working days)</span><span class="v tabular">${inr(daily)}</span></div>
+      <div class="result-row"><span>Weekly Approximation</span><span class="v tabular">${inr(weekly)}</span></div>
+      <div class="result-row"><span>Quarterly (derived: ×3)</span><span class="v tabular">${inr(quarterlyDerived)}${t.quarterly && Math.abs(num(t.quarterly)-quarterlyDerived)>1?" (stated: "+inr(num(t.quarterly))+")":""}</span></div>
+      <div class="result-row"><span>Annual (derived: ×12)</span><span class="v tabular">${inr(annualDerived)}${t.annual && Math.abs(num(t.annual)-annualDerived)>1?" (stated: "+inr(num(t.annual))+")":""}</span></div>
+    </div>
+    ${expected>0?`<div class="alert ${expected<monthly?'bad':'good'}" style="margin-top:10px;">${expected<monthly?
+        `⚠️ Target may not be realistically achievable — your expected monthly sales (${inr(expected)}, from Simulator) is below the required target (${inr(monthly)}).`:
+        `✓ Your expected monthly sales (${inr(expected)}) meets or exceeds the target (${inr(monthly)}).`}</div>`:
+      `<div class="explain" style="margin-top:8px;">Set "Monthly Sales" in the Simulator section to compare against this target.</div>`}
+    `:""}
+  </div>`;
+}
+function renderTargetSection(){
+  const s="target";
+  return `
+  ${fieldText(s,"monthly","Monthly Sales Target","Company ko har month minimum kitne ₹ ka maal uthana/bechna padega?","₹50,000",{currency:true,type:"number"})}
+  ${fieldText(s,"monthlyPurchase","Monthly Purchase Target","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"quarterly","Quarterly Target (as stated by company, optional)","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"annual","Annual Target (as stated by company, optional)","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"minMonthlyOrder","Minimum Monthly Order","",null,{currency:true,type:"number"})}
+  ${fieldPills(s,"failureConsequence","Target Miss hua to?","",["No Target","Recommended","Compulsory","Not Clear"],{"Compulsory":"warn"})}
+  ${renderTargetCalc()}
+  ${notesField(s)}
+  `;
+}
+
+function renderReorderSection(){
+  const s="reorder";
+  const r = curCompany().reorder;
+  const warnings = [];
+  if(r.transportCharges==="Paid"||(/paid/i.test(r.transportCharges||""))) warnings.push("Reorder transport is paid — factor this into ongoing costs");
+  if(r.moq && /\d{3,}/.test(r.moq)) warnings.push("MOQ looks high — confirm you can realistically sell this quantity before reordering");
+  if(!r.price) warnings.push("Reorder price not documented — could differ from first-order price");
+  if(!r.scheme) warnings.push("Reorder scheme not documented — first-order scheme may not repeat");
+  return `
+  <div class="alert warn" style="margin-top:0;">💡 First order attractive hota hai, lekin second order kis rate par milega — yeh puchna zaroori hai.</div>
+  ${fieldText(s,"minValue","Minimum Reorder Value","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"moq","MOQ","Minimum Order Quantity — dobara maal mangwane ke liye minimum order.")}
+  ${fieldText(s,"price","Distributor Price on Reorder","")}
+  ${fieldText(s,"scheme","Scheme","")}
+  ${fieldText(s,"creditTerms","Credit Terms","")}
+  ${fieldText(s,"deliveryTime","Delivery Time","")}
+  ${fieldText(s,"transportCharges","Transport Charges","")}
+  ${fieldText(s,"freeCond","Free Transport Conditions","")}
+  ${warnings.length?warnings.map(w=>`<div class="alert warn">⚠️ ${esc(w)}</div>`).join(""):""}
+  ${notesField(s)}
+  `;
+}
+
+function renderTransportSection(){
+  const s="transport";
+  return `
+  ${fieldPills(s,"firstOrder","First Order Transport","",["Free","Paid","Not Clear"])}
+  ${fieldPills(s,"reorderTransport","Reorder Transport","",["Free","Paid","Conditional","Not Clear"])}
+  ${fieldText(s,"minFreeOrder","Minimum Order for Free Transport","")}
+  ${fieldPills(s,"damageResp","Damage During Transport — kiski responsibility?","",["Company","Distributor","Shared","Not Clear"])}
+  ${notesField(s)}
+  `;
+}
+
+function returnsRiskMatrix(c){
+  const ret = c.returns;
+  const total = num(c.investment.total);
+  const rows = [];
+  rows.push(["Expired Stock Return", ret.expiredReturn, ret.expiredReturn==="Yes"?"LOW":ret.expiredReturn==="Conditional"?"MEDIUM":"HIGH"]);
+  rows.push(["Unsold Stock Return", ret.unsold, ret.unsold==="Yes"?"LOW":(total>=30000?"HIGH":"MEDIUM")+" (inventory size considered)"]);
+  rows.push(["Leakage/Breakage", (ret.leakage==="Yes"&&ret.breakage==="Yes")?"Yes":"Partial/No", (ret.leakage==="Yes"&&ret.breakage==="Yes")?"LOW":"MEDIUM"]);
+  rows.push(["Near-Expiry Replacement", ret.nearExpiry, ret.nearExpiry==="Yes"?"LOW":ret.nearExpiry==="Conditional"?"MEDIUM":"HIGH"]);
+  rows.push(["Claim Window", ret.claimWindow||"Not Clear", ret.claimWindow?"LOW":"VERIFICATION REQUIRED"]);
+  return rows;
+}
+function renderReturnsSection(){
+  const s="returns";
+  const c = curCompany();
+  const opts=["Yes","No","Conditional","Not Clear"];
+  const matrix = returnsRiskMatrix(c);
+  return `
+  ${fieldPills(s,"leakage","Leakage Replacement","",opts)}
+  ${fieldPills(s,"breakage","Breakage Replacement","",opts)}
+  ${fieldPills(s,"mfgDefect","Manufacturing Defect Replacement","",opts)}
+  ${fieldPills(s,"nearExpiry","Near-Expiry Replacement","",opts)}
+  ${fieldPills(s,"expiredReturn","Expired Stock Return","",opts)}
+  ${fieldPills(s,"slowMoving","Slow-Moving Stock Return","",opts)}
+  ${fieldPills(s,"unsold","Unsold Stock Return","",opts)}
+  ${fieldText(s,"claimWindow","Claim Window","Example: 7 days / 15 days / 30 days")}
+  ${curCompany().returns.unsold==="No"?`<div class="alert warn">⚠️ Unsold stock ka risk distributor par aa sakta hai.</div>`:""}
+  <div class="section-title" style="margin-top:16px;">Financial Risk Matrix</div>
+  <div class="explain" style="margin:-4px 2px 6px;">Risks here are not weighted equally — expired/unsold stock is a direct cash loss.</div>
+  <div class="compare-scroll"><table class="compare-table">
+    <thead><tr><th>Item</th><th>Answer</th><th>Risk</th></tr></thead>
+    <tbody>${matrix.map(r=>`<tr><td class="rowlabel">${esc(r[0])}</td><td>${esc(r[1]||"—")}</td><td class="${/HIGH|VERIFICATION/.test(r[2])?'tag-bad':/MEDIUM/.test(r[2])?'tag-warn':'tag-ok'}">${esc(r[2])}</td></tr>`).join("")}</tbody>
+  </table></div>
+  ${notesField(s)}
+  `;
+}
+
+function renderMarketingSection(){
+  const s="marketing";
+  const opts=["Free","Paid","Conditional","Not Available","Not Clear"];
+  return `
+  ${fieldPills(s,"lightBoard","Light Board","",opts)}
+  ${fieldPills(s,"posters","Posters","",opts)}
+  ${fieldPills(s,"shopBranding","Shop Branding","",opts)}
+  ${fieldPills(s,"pamphlets","Pamphlets","",opts)}
+  ${fieldPills(s,"visitingCards","Visiting Cards","",opts)}
+  ${fieldPills(s,"digitalCreatives","Digital Creatives","",opts)}
+  ${fieldPills(s,"socialMedia","Social Media Support","",opts)}
+  ${fieldPills(s,"localAd","Local Advertising","",opts)}
+  ${fieldPills(s,"salesmanVisits","Salesman Visits","",opts)}
+  ${fieldPills(s,"productTraining","Product Training","",opts)}
+  ${fieldPills(s,"salesTraining","Sales Training","",opts)}
+  ${fieldText(s,"estValue","Estimated Support Value","Agar amount pata hai to daalein, taaki value calculate ho sake.",null,{currency:true,type:"number"})}
+  ${notesField(s)}
+  `;
+}
+
+function renderStaffSection(){
+  const s="staff";
+  const st = curCompany().staff;
+  const monthlyCost = num(st.salary)+num(st.petrol)+num(st.incentive)+num(st.otherExpense);
+  return `
+  ${fieldPills(s,"companySalesman","Company Salesman","",["Yes","No"])}
+  ${fieldPills(s,"distributorSalesman","Distributor Salesman Needed?","",["Yes","No"])}
+  ${fieldPills(s,"deliveryStaff","Delivery Staff","",["Company","Distributor","Shared"])}
+  ${fieldPills(s,"training","Training","",["Yes","No"])}
+  ${fieldPills(s,"marketVisit","Market Visit","",["Weekly","Monthly","Not Available"])}
+  ${fieldPills(s,"leadSupport","Lead Support","",["Yes","No"])}
+  <div class="section-title" style="margin-top:18px;">Distributor's Own Staff Cost</div>
+  ${fieldText(s,"salary","Salary","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"petrol","Petrol","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"incentive","Incentive","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"otherExpense","Other Monthly Expense","",null,{currency:true,type:"number"})}
+  <div class="result-box"><div class="result-row total"><span>Estimated Monthly Staff Cost</span><span class="tabular">${inr(monthlyCost)}</span></div></div>
+  ${notesField(s)}
+  `;
+}
+
+function renderCreditSection(){
+  const s="credit";
+  return `
+  ${fieldPills(s,"terms","Credit Terms","",["Advance","Cash","7 Days","15 Days","30 Days","45 Days","60 Days","Other"])}
+  ${fieldText(s,"limit","Credit Limit","",null,{currency:true,type:"number"})}
+  <div class="alert warn">Credit milna cash-flow ke liye helpful ho sakta hai, lekin margin aur conditions bhi compare karein.</div>
+  ${notesField(s)}
+  `;
+}
+
+function renderExitSection(){
+  const s="exit";
+  return `
+  <div class="alert warn" style="margin-top:0;">Business shuru karne se pehle business se bahar nikalne ka rule samajhna zaroori hai.</div>
+  ${fieldPills(s,"canCancel","Distributorship cancel ho sakti hai?","",["Yes","No","Not Clear"])}
+  ${fieldText(s,"noticePeriod","Notice Period","")}
+  ${fieldPills(s,"stockReturn","Remaining Stock Return?","",["Yes","No","Conditional","Not Clear"])}
+  ${fieldPills(s,"depositRefund","Security Deposit Refund?","",["Yes","No","Conditional","Not Clear"])}
+  ${fieldText(s,"penalty","Penalty","")}
+  ${fieldText(s,"territoryProcess","Territory Cancellation Process","")}
+  ${fieldText(s,"terminationTerms","Agreement Termination Terms","",null,{textarea:true})}
+  ${notesField(s)}
+  `;
+}
+
+const DOC_LIST = [
+  ["gstCert","GST Certificate"],["companyReg","Company Registration"],["distAgreement","Distributor Agreement"],
+  ["catalogue","Product Catalogue"],["priceList","Price List"],["stockList","Stock List"],
+  ["gstInvoiceDoc","GST Invoice"],["territoryLetter","Territory Letter"],["returnPolicyDoc","Return Policy"],
+  ["damagePolicyDoc","Damage Policy"],["paymentDetails","Payment Details"],["existingDistRef","Existing Distributor Reference"]
+];
+function docVerificationPct(company){
+  const d = company.documents;
+  const verified = DOC_LIST.filter(([k])=>d[k]==="Verified").length;
+  return Math.round(verified/DOC_LIST.length*100);
+}
+/* ---- Negotiation Point Generator: built ONLY from detected weaknesses in entered data, not generic text ---- */
+function generateNegotiationPoints(c){
+  const points = [];
+  const add = (issue,why,ask,preferred,fallback,walkAway)=>points.push({issue,why,ask,preferred,fallback,walkAway});
+  const w = weightedMargins(c.products);
+  const t=c.territory, inv=c.investment, ret=c.returns, reorder=c.reorder, tgt=c.target, staff=c.staff, marketing=c.marketing, credit=c.credit;
+
+  if(c.products.length && w.weightedMarginPct<12){
+    add("Low distributor margin",
+      `Weighted margin is only ${pct(w.weightedMarginPct)} — thin margin makes recovery slow and leaves no room for damage/unsold losses.`,
+      "Ask for a lower distributor price or a better scheme to raise effective margin.",
+      "Margin raised to 15%+ via price/scheme revision.",
+      "At least a bigger introductory scheme (extra free units) to offset the thin margin.",
+      "If margin stays below 8% with no flexibility, this is not viable — walk away.");
+  }
+  const total = num(inv.total);
+  const unrepresented = total>0 ? Math.max(0,total - w.totalEffCost - (num(inv.branding)+num(inv.registration)+num(inv.transport)+num(inv.deposit)+num(inv.gst)+num(inv.other))) : 0;
+  if(unrepresented>1){
+    add("Investment not fully represented by stock/charges",
+      `${inr(unrepresented)} of the total investment is unaccounted for by inventory or any listed charge.`,
+      "Ask the company to itemize exactly what this amount covers.",
+      "Full written breakdown provided and it reconciles to the rupee.",
+      "Amount reduced from total investment until explained.",
+      "If they cannot explain it, treat this as a red flag and do not pay.");
+  }
+  if(t.type!=="Exclusive" || t.agreementMentions!=="Yes"){
+    add("Territory exclusivity not written",
+      "Verbal exclusivity claims are not enforceable — another distributor could be appointed in your area later.",
+      "Ask for written, signed exclusivity for your district in the agreement itself.",
+      "Exclusive rights explicitly named with district boundaries in the agreement.",
+      "A written non-compete radius/time period if full exclusivity isn't offered.",
+      "If they refuse to put it in writing at all, this is a major risk.");
+  }
+  if(tgt.failureConsequence==="Compulsory"){
+    add("Compulsory target with unclear consequence",
+      "A compulsory target with unclear failure consequences creates open-ended liability.",
+      "Ask exactly what happens if the target is missed — penalty, termination, or nothing.",
+      "Target framed as 'recommended', with no penalty for missing it.",
+      "A written cap on any penalty, and a grace period before termination.",
+      "If they can't specify the consequence in writing, don't accept a compulsory target.");
+  }
+  if(ret.expiredReturn!=="Yes" || ret.unsold!=="Yes"){
+    add("No expiry/unsold stock return",
+      "Without this, all expiry and unsold-stock loss falls on you, even for slow-moving SKUs.",
+      "Ask for expired stock replacement and at least partial unsold-stock buyback.",
+      "100% replacement for expired stock; unsold stock returnable after a fixed period.",
+      "A capped return window (e.g. return up to 10% of stock value per quarter).",
+      "If neither is offered on high-value inventory, negotiate the initial order size down instead.");
+  }
+  if(ret.leakage!=="Yes" && ret.breakage!=="Yes"){
+    add("No damage/breakage replacement",
+      "Transit and handling damage is common in FMCG/consumer goods distribution.",
+      "Ask for a documented leakage/breakage replacement policy with a claim window.",
+      "Full replacement within a clear claim window (e.g. 7-15 days) with photo proof.",
+      "Partial credit note against next order for verified damage.",
+      "If there's no policy at all, factor an extra loss buffer into your margin math.");
+  }
+  if(/paid/i.test(reorder.transportCharges||"")){
+    add("Paid reorder transport",
+      "Ongoing transport cost on every reorder erodes margin that looked fine on paper.",
+      "Ask for free/discounted transport above a reasonable reorder value.",
+      "Free transport above a stated reorder value.",
+      "A fixed transport slab instead of per-order variable cost.",
+      "If transport cost materially erodes your margin, revisit whether the deal is worth it.");
+  }
+  if(reorder.moq && /\d{3,}/.test(reorder.moq)){
+    add("High reorder MOQ",
+      "A high MOQ can force overstocking and cash-flow strain if sales are slower than planned.",
+      "Ask if MOQ can be reduced, especially for the first few reorder cycles.",
+      "MOQ scaled down for the first 2-3 reorders while you build the market.",
+      "Split delivery of the MOQ across two payments/dates.",
+      "If MOQ is rigid and large, be conservative about the order value you commit to.");
+  }
+  if(staff.companySalesman!=="Yes" && marketing.salesmanVisits!=="Free"){
+    add("Weak staff/sales support",
+      "Without company sales support, all market-building cost and effort falls on you.",
+      "Ask for periodic company salesman visits or lead support, even if limited.",
+      "Scheduled monthly company salesman visits.",
+      "One-time launch support even if ongoing support isn't offered.",
+      "Factor the missing support into your own staffing cost estimate.");
+  }
+  if(!credit.terms){
+    add("No credit facility",
+      "No credit means you carry full working-capital risk from day one.",
+      "Ask for at least short credit terms (7-15 days) on reorders after the first few cycles.",
+      "7-15 day credit after a track record of 2-3 timely payments.",
+      "A small credit limit even if short-duration.",
+      "If no credit is possible at all, size your first order conservatively.");
+  }
+  if(inv.paymentMethod==="Personal Account"){
+    add("Payment requested to personal account",
+      "Paying into a personal (not company) account removes legal protection if something goes wrong.",
+      "Ask for payment details of the official company bank account only.",
+      "Payment made only to the verified company account, against a proper invoice.",
+      "None — this is not something to compromise on.",
+      "If they insist on a personal account, do not pay. This alone is reason to stop.");
+  }
+  if(c.documents.distAgreement!=="Verified"){
+    add("No verified written agreement",
+      "Without a signed agreement, none of the verbal promises made are enforceable.",
+      "Ask for the full distributorship agreement before any payment is made.",
+      "Signed agreement covering territory, targets, returns, and exit — reviewed before payment.",
+      "At minimum a written term sheet, with the full agreement to follow within days.",
+      "Do not pay any advance without at least a written term sheet.");
+  }
+  if(c.documents.territoryLetter!=="Verified" && t.type==="Exclusive"){
+    add("Territory letter not verified",
+      "An exclusivity claim without a supporting document/letter is just a verbal assurance.",
+      "Ask for a specific territory letter naming your district/area.",
+      "Signed territory letter attached to the agreement.",
+      "Exclusivity clause written directly into the main agreement instead of a separate letter.",
+      "If neither is offered, do not treat the territory as protected.");
+  }
+  if(c.documents.returnPolicyDoc!=="Verified"){
+    add("Return policy not documented",
+      "An undocumented return policy can be changed or denied later with no recourse.",
+      "Ask for the return/damage/expiry policy in writing.",
+      "Written return policy attached to the agreement.",
+      "Return terms added as a clause in the main agreement.",
+      "Without this in writing, budget as if there is no return policy at all.");
+  }
+  const sim = computeSimulator(c);
+  if(c.simulator.monthlySales!=="" && sim.recoveryMonths!=null && sim.recoveryMonths>18){
+    add("Long recovery period",
+      `At entered assumptions, recovery takes ~${sim.recoveryMonths.toFixed(1)} months — a long payback increases risk exposure.`,
+      "Ask for a lower entry investment, better margin, or phased investment.",
+      "Recovery period brought under 12 months via better terms.",
+      "Phase the investment — pay part now, rest after initial sales validate the market.",
+      "If recovery stays beyond 18-24 months with no flexibility, reconsider the investment size.");
+  }
+  return points;
+}
+function renderNegotiationSection(){
+  const c = curCompany();
+  const points = generateNegotiationPoints(c);
+  if(points.length===0){
+    return `<div class="alert good">✓ No specific negotiation points auto-detected from entered data. Still negotiate standard terms (payment schedule, credit, support) before paying.</div>`;
+  }
+  return `
+  <div class="explain" style="margin:-4px 2px 10px;">Generated from the weaknesses actually detected in ${esc(c.name)}'s entered data — not generic advice.</div>
+  ${points.map((p,i)=>`
+    <div class="result-box" style="margin-bottom:12px;">
+      <div style="font-weight:800;font-size:14px;margin-bottom:6px;">${i+1}. ${esc(p.issue)}</div>
+      <div class="explain" style="margin:0 0 8px;">${esc(p.why)}</div>
+      <div class="result-row"><span>What to ask</span><span class="v" style="text-align:right;max-width:60%;">${esc(p.ask)}</span></div>
+      <div class="result-row"><span>Preferred</span><span class="v tag-ok" style="text-align:right;max-width:60%;">${esc(p.preferred)}</span></div>
+      <div class="result-row"><span>Fallback</span><span class="v tag-warn" style="text-align:right;max-width:60%;">${esc(p.fallback)}</span></div>
+      <div class="result-row"><span>Walk-away</span><span class="v tag-bad" style="text-align:right;max-width:60%;">${esc(p.walkAway)}</span></div>
+    </div>`).join("")}
+  `;
+}
+const PAYMENT_SAFETY_ITEMS = [
+  ["legalNameVerified","Legal company name verified"],
+  ["gstinVerified","GSTIN verified"],
+  ["bankNameMatches","Bank account name matches legal entity"],
+  ["notPersonalAccount","Payment account is NOT a personal account"],
+  ["proformaInvoice","Proforma invoice received"],
+  ["gstInvoiceReq","GST invoice requirement confirmed"],
+  ["agreementReceived","Distributor agreement received/reviewed"],
+  ["territoryWritten","Territory rights confirmed in writing"],
+  ["inventoryListConfirmed","Product/inventory list confirmed"],
+  ["investmentBreakupConfirmed","Investment breakup confirmed"],
+  ["refundExitConfirmed","Refund/exit policy confirmed"],
+  ["returnDamageExpiryConfirmed","Return/damage/expiry policy confirmed"],
+  ["noHiddenCharges","No hidden registration/security/other charges"],
+  ["recipientVerified","Payment recipient verified"],
+  ["finalAmountVerified","Final payable amount verified"],
+];
+const PAYMENT_SAFETY_CRITICAL = ["notPersonalAccount","bankNameMatches","agreementReceived","territoryWritten","investmentBreakupConfirmed","recipientVerified","finalAmountVerified"];
+function paymentSafetyStatus(c){
+  const ps = c.paymentSafety;
+  const verified = PAYMENT_SAFETY_ITEMS.filter(([k])=>ps[k]==="Verified").length;
+  const pct_ = Math.round(verified/PAYMENT_SAFETY_ITEMS.length*100);
+  const criticalPending = PAYMENT_SAFETY_CRITICAL.filter(k=>ps[k]!=="Verified" && ps[k]!=="Not Applicable");
+  return {pct:pct_, criticalPending, safeToPay: criticalPending.length===0};
+}
+function renderPaymentSafetySection(){
+  const c = curCompany();
+  const ps = c.paymentSafety;
+  const st = paymentSafetyStatus(c);
+  return `
+  <div class="result-box">
+    <div class="result-row"><span>Payment Safety Verification</span><span class="v tabular">${st.pct}%</span></div>
+    <div class="doc-progress"><div class="doc-progress-fill" style="width:${st.pct}%;background:${st.safeToPay?'var(--good)':'var(--bad)'};"></div></div>
+  </div>
+  ${!st.safeToPay?`<div class="warning-banner">🚫 DO NOT PAY YET — ${st.criticalPending.length} critical item(s) unverified</div>`:
+    `<div class="alert good">✓ All critical checklist items verified. Still confirm every document in original before paying.</div>`}
+  <div style="margin-top:6px;">
+  ${PAYMENT_SAFETY_ITEMS.map(([k,label])=>`
+    <div class="doc-row">
+      <span class="name">${label}${PAYMENT_SAFETY_CRITICAL.includes(k)?' <b style="color:var(--bad);">*</b>':''}</span>
+      <div class="pillgroup" data-sec="paymentSafety" data-key="${k}" data-kind="pill">
+        ${["Verified","Not Verified","Not Applicable"].map(o=>`<button type="button" data-val="${o}" class="${ps[k]===o?'sel '+(o==='Verified'?'good':(o==='Not Applicable'?'':'warn')):''}" style="padding:6px 9px;font-size:11.5px;">${o}</button>`).join("")}
+      </div>
+    </div>`).join("")}
+  </div>
+  <div class="explain" style="margin-top:8px;">* Marked items are critical — if unverified, they contribute to a FATAL or HIGH risk flag automatically.</div>
+  ${notesField("paymentSafety")}
+  `;
+}
+function renderDocumentsSection(){
+  const s="documents";
+  const d = curCompany().documents;
+  const p = docVerificationPct(curCompany());
+  const missingCritical = CRITICAL_DOCS.some(([k])=>d[k]!=="Verified") || (curCompany().territory.type==="Exclusive" && d.territoryLetter!=="Verified");
+  return `
+  <div class="result-box">
+    <div class="result-row"><span>Document Verification</span><span class="v tabular">${p}%</span></div>
+    <div class="doc-progress"><div class="doc-progress-fill" style="width:${p}%"></div></div>
+  </div>
+  ${missingCritical?`<div class="alert bad">⚠️ Important documents missing/not verified hain.</div>`:""}
+  <div style="margin-top:6px;">
+  ${DOC_LIST.map(([k,label])=>`
+    <div class="doc-row">
+      <span class="name">${label}</span>
+      <div class="pillgroup" data-sec="${s}" data-key="${k}" data-kind="pill">
+        ${["Verified","Not Verified","Not Available"].map(o=>`<button type="button" data-val="${o}" class="${d[k]===o?'sel '+(o==='Verified'?'good':(o==='Not Available'?'bad':'warn')):''}" style="padding:6px 9px;font-size:11.5px;">${o}</button>`).join("")}
+      </div>
+    </div>`).join("")}
+  </div>
+  `;
+}
+
+/* ---- Simulator + recovery ---- */
+function computeSimulator(c){
+  const sim = c.simulator;
+  const sales = num(sim.monthlySales);
+  const autoMarginPct = weightedMargins(c.products).weightedMarginPct;
+  const manualMarginPct = num(sim.grossMarginPct);
+  const marginSource = sim.marginSource==="auto" ? "auto" : "manual";
+  const marginPct = marginSource==="auto" ? autoMarginPct : manualMarginPct;
+  const grossProfit = sales*marginPct/100;
+  const expenses = num(sim.transport)+num(sim.salary)+num(sim.petrol)+num(sim.warehouse)+num(sim.phone)+num(sim.marketing)+num(sim.other);
+  const netProfit = grossProfit-expenses;
+  const investment = num(c.investment.total);
+  const recoveryMonths = netProfit>0 ? (investment/netProfit) : null;
+  const breakEvenSales = marginPct>0 ? (expenses/(marginPct/100)) : null;
+  return {sales,marginPct,autoMarginPct,manualMarginPct,marginSource,grossProfit,expenses,netProfit,investment,recoveryMonths,breakEvenSales};
+}
+/* Scenario estimate — NOT a forecast. Expenses assumed constant across scenarios. */
+function simulateScenario(c, salesMult, marginMult){
+  const base = computeSimulator(c);
+  const sales = base.sales*salesMult;
+  const marginPct = base.marginPct*marginMult;
+  const grossProfit = sales*marginPct/100;
+  const expenses = base.expenses;
+  const netProfit = grossProfit-expenses;
+  const recoveryMonths = netProfit>0 ? base.investment/netProfit : null;
+  return {sales,marginPct,grossProfit,expenses,netProfit,recoveryMonths};
+}
+function computeSensitivity(c){
+  return {
+    "Conservative": simulateScenario(c,0.7,0.85),
+    "Base": simulateScenario(c,1,1),
+    "Optimistic": simulateScenario(c,1.3,1.1),
+  };
+}
+function renderSimulatorSection(){
+  const s="simulator";
+  const c = curCompany();
+  const r = computeSimulator(c);
+  const sens = computeSensitivity(c);
+  return `
+  ${fieldText(s,"monthlySales","Monthly Sales","Aap har mahine kitne ka maal bechne ki umeed karte hain?","₹1,00,000",{currency:true,type:"number"})}
+  <div class="field">
+    <label>Gross Margin Source</label>
+    <div class="explain">Automatic Product Margin: <b>${pct(r.autoMarginPct)}</b> (weighted, from Products) &nbsp;|&nbsp; Manual Simulator Margin: <b>${pct(r.manualMarginPct)}</b></div>
+    <div class="pillgroup" id="marginSourceGroup">
+      <button type="button" data-marginsrc="manual" class="${r.marginSource==='manual'?'sel':''}">Use Manual</button>
+      <button type="button" data-marginsrc="auto" class="${r.marginSource==='auto'?'sel good':''}">Use Automatic (${pct(r.autoMarginPct)})</button>
+    </div>
+  </div>
+  ${fieldText(s,"grossMarginPct","Manual Gross Margin %","Used only when 'Use Manual' is selected above.",null,{type:"number"})}
+  <div class="result-box" style="margin-top:6px;"><div class="result-row"><span>Selected Margin (used below)</span><span class="v tabular">${pct(r.marginPct)}</span></div></div>
+  <div class="section-title" style="margin-top:18px;">Monthly Expenses</div>
+  ${fieldText(s,"transport","Transport","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"salary","Salesman Salary","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"petrol","Petrol","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"warehouse","Warehouse","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"phone","Phone","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"marketing","Marketing","",null,{currency:true,type:"number"})}
+  ${fieldText(s,"other","Other Expenses","",null,{currency:true,type:"number"})}
+  <div class="result-box">
+    <div class="result-row"><span>Gross Profit</span><span class="v tabular">${inr(r.grossProfit)}</span></div>
+    <div class="result-row"><span>Total Monthly Expenses</span><span class="v tabular">${inr(r.expenses)}</span></div>
+    <div class="result-row total"><span>Estimated Net Operating Profit</span><span class="tabular">${inr(r.netProfit)}</span></div>
+  </div>
+  <div class="disclaimer">Yeh "Estimated Operating Profit" hai — guaranteed profit nahi.</div>
+  ${r.netProfit<=0?`<div class="alert bad">⚠️ At this sales level, investment recovery is not occurring.</div>`:""}
+
+  <div class="big-metric">
+    <div class="num tabular">${r.recoveryMonths!=null? r.recoveryMonths.toFixed(1)+" months" : "Not achieved"}</div>
+    <div class="lbl">Estimated Investment Recovery</div>
+  </div>
+  <div class="disclaimer">Yeh ek estimate hai, guaranteed return nahi. (Investment ${inr(r.investment)} ÷ Monthly Net Profit)</div>
+
+  <div class="result-box" style="margin-top:14px;">
+    <div class="result-row"><span>Break-even Monthly Sales</span><span class="v tabular">${r.breakEvenSales!=null? inr(r.breakEvenSales):"—"}</span></div>
+  </div>
+
+  <div class="section-title" style="margin-top:20px;">Sensitivity Analysis</div>
+  <div class="explain" style="margin:-4px 2px 8px;">Scenario estimate — not a forecast. Conservative = lower sales/margin, Optimistic = higher sales/margin. Expenses held constant.</div>
+  <div class="compare-scroll"><table class="compare-table">
+    <thead><tr><th>Scenario</th><th>Monthly Profit</th><th>Annual Profit</th><th>Recovery</th></tr></thead>
+    <tbody>
+    ${Object.entries(sens).map(([name,v])=>`<tr>
+      <td class="rowlabel">${name}</td>
+      <td class="${v.netProfit<=0?'tag-bad':'tag-ok'}">${inr(v.netProfit)}</td>
+      <td>${inr(v.netProfit*12)}</td>
+      <td>${v.recoveryMonths!=null?v.recoveryMonths.toFixed(1)+" mo":"Not achieved"}</td>
+    </tr>`).join("")}
+    </tbody>
+  </table></div>
+  `;
+}
+
+/* ---- Risk analysis: categorized, severity-weighted, with an explicit FATAL tier ----
+   Category weights (visible in UI, part of Score Section too):
+   Legal/company verification, Territory protection, Financial transparency = VERY HIGH
+   Return/expiry liability = HIGH
+   Margin economics = HIGH
+   Targets = MEDIUM/HIGH
+   Credit = MEDIUM
+   Company Support = LOW/MEDIUM
+   A single FATAL item overrides everything else — a high score can NOT cancel it out. */
+const RISK_CATEGORY_WEIGHT = {
+  "Legal & Documentation": "VERY HIGH",
+  "Financial Transparency": "VERY HIGH",
+  "Territory Protection": "VERY HIGH",
+  "Return / Inventory Risk": "HIGH",
+  "Product / Margin": "HIGH",
+  "Targets & Sales Pressure": "MEDIUM/HIGH",
+  "Exit Flexibility": "MEDIUM",
+  "Company Support": "LOW/MEDIUM",
+};
+function computeRiskItems(c){
+  const items = [];
+  const add = (id,text,severity,category)=>items.push({id,text,severity,category});
+  const t=c.territory, inv=c.investment, tgt=c.target, ret=c.returns, reorder=c.reorder, exit=c.exit, doc=c.documents, meta=c.meta;
+
+  // ---- Legal & documentation ----
+  if(!meta.legalName || !meta.gstin) add("legal-id","Company legal identity (registered name / GSTIN) cannot be verified","FATAL","Legal & Documentation");
+  if(doc.distAgreement!=="Verified") add("agreement","No written distributorship agreement verified","FATAL","Legal & Documentation");
+  if(doc.territoryLetter!=="Verified" && t.type==="Exclusive") add("territory-doc","Territory claimed exclusive but no territory letter/proof verified","FATAL","Legal & Documentation");
+
+  // ---- Financial transparency ----
+  if(inv.paymentMethod==="Personal Account") add("personal-acct","Payment requested to a personal bank account, not the company's official account","FATAL","Financial Transparency");
+  if(inv.gstInvoice!=="Yes" && doc.gstInvoiceDoc!=="Verified") add("no-invoice","No GST invoice confirmed for the purchase","FATAL","Financial Transparency");
+  const total = num(inv.total);
+  const breakdown = num(inv.inventory)+num(inv.branding)+num(inv.registration)+num(inv.transport)+num(inv.deposit)+num(inv.gst)+num(inv.other);
+  if(total>0 && Math.abs(total-breakdown)>=1) add("inv-mismatch",`Investment breakup does not reconcile — ${inr(Math.abs(total-breakdown))} unexplained`,"FATAL","Financial Transparency");
+  if(total>0 && inv.deposit && num(inv.deposit)/total>0.3) add("heavy-deposit","Security deposit is a large share (>30%) of total investment","MEDIUM","Financial Transparency");
+  if(reorder.price==="") add("reorder-price-unclear","Reorder price not documented","MEDIUM","Financial Transparency");
+  if(inv.other && num(inv.other)>0 && !inv.notes) add("hidden-charge","'Other charges' present with no explanation in notes","MEDIUM","Financial Transparency");
+  const ps = c.paymentSafety;
+  if(ps.notPersonalAccount==="Not Verified") add("ps-personal","Payment Safety checklist: 'not a personal account' is unverified","FATAL","Financial Transparency");
+  if(ps.bankNameMatches==="Not Verified") add("ps-bankname","Payment Safety checklist: bank account name is not confirmed to match the legal entity","HIGH","Financial Transparency");
+  if(ps.recipientVerified==="Not Verified") add("ps-recipient","Payment Safety checklist: payment recipient not verified","HIGH","Financial Transparency");
+  if(ps.agreementReceived==="Not Verified") add("ps-agreement","Payment Safety checklist: distributor agreement not received/reviewed","HIGH","Financial Transparency");
+  if(ps.territoryWritten==="Not Verified") add("ps-territory","Payment Safety checklist: territory rights not confirmed in writing","HIGH","Financial Transparency");
+  if(ps.finalAmountVerified==="Not Verified") add("ps-amount","Payment Safety checklist: final payable amount not verified","HIGH","Financial Transparency");
+  if(ps.investmentBreakupConfirmed==="Not Verified") add("ps-breakup","Payment Safety checklist: investment breakup not confirmed with company","HIGH","Financial Transparency");
+
+  // ---- Territory hierarchy (never mark safe on verbal assurance alone) ----
+  if(t.type==="Exclusive" && t.canAppoint==="Yes") add("territory-conflict","Territory claimed exclusive, but company says it CAN appoint another distributor here — direct contradiction","FATAL","Territory Protection");
+  else if(t.type==="Exclusive" && t.agreementMentions==="Yes" && doc.territoryLetter==="Verified"){ /* best case: no flag */ }
+  else if(t.type==="Exclusive" && t.agreementMentions!=="Yes") add("territory-verbal","Exclusivity claimed only verbally — not written in the agreement","HIGH","Territory Protection");
+  else if(t.type==="Non-exclusive") add("territory-nonexcl","Territory is explicitly non-exclusive","HIGH","Territory Protection");
+  else add("territory-unclear","Territory protection status is not clear","HIGH","Territory Protection");
+  if(t.directSells==="Yes") add("direct-sell","Company sells directly within your claimed territory","MEDIUM","Territory Protection");
+  if(t.onlineSales==="Yes") add("online-sell","Online sales compete within your claimed territory","MEDIUM","Territory Protection");
+
+  // ---- Return / inventory risk ----
+  if(ret.expiredReturn!=="Yes") add("expired-return", ret.expiredReturn==="Conditional"?"Expired stock return is conditional only":"No replacement/return for expired stock","HIGH","Return / Inventory Risk");
+  if(ret.unsold!=="Yes") add("unsold-return", ret.unsold==="Conditional"?"Unsold stock return is conditional only":"Unsold stock will not be taken back","MEDIUM","Return / Inventory Risk");
+  if(ret.leakage!=="Yes" && ret.breakage!=="Yes") add("damage-unclear","Leakage/breakage replacement is not confirmed","MEDIUM","Return / Inventory Risk");
+  if(ret.nearExpiry==="No") add("near-expiry","Near-expiry stock will not be replaced","MEDIUM","Return / Inventory Risk");
+  if(ret.slowMoving!=="Yes") add("slow-moving","No return provision for slow-moving stock","LOW","Return / Inventory Risk");
+  if(!ret.claimWindow) add("claim-window","Claim window for damage/return is not documented — verification required","MEDIUM","Return / Inventory Risk");
+
+  // ---- Product / margin economics (uses weighted margin, not a simple average) ----
+  if(c.products.length===0){
+    add("no-products","No product-wise stock/price data entered yet — real margin unknown","HIGH","Product / Margin");
+  } else {
+    const w = weightedMargins(c.products);
+    if(w.weightedMarginPct < 8) add("low-margin",`Weighted distributor margin is very low (${pct(w.weightedMarginPct)})`,"HIGH","Product / Margin");
+    else if(w.weightedMarginPct < 12) add("thin-margin",`Weighted distributor margin is thin (${pct(w.weightedMarginPct)})`,"MEDIUM","Product / Margin");
+    const gstUnclear = c.products.filter(p=>computeEffectivePrice(p).gstUnknown).length;
+    if(gstUnclear>0) add("gst-unclear",`GST treatment unclear on ${gstUnclear} product(s) — margin cannot be fully confirmed`,"MEDIUM","Product / Margin");
+  }
+
+  // ---- Targets & sales pressure ----
+  if(tgt.failureConsequence==="Compulsory") add("target-compulsory","Monthly target is compulsory (high sales pressure)","MEDIUM","Targets & Sales Pressure");
+  if(reorder.moq && /\d{3,}/.test(reorder.moq)) add("moq-high","Reorder MOQ looks high — verify before committing","MEDIUM","Targets & Sales Pressure");
+
+  // ---- Exit flexibility ----
+  if(exit.canCancel==="Not Clear" || !exit.terminationTerms) add("exit-unclear","Exit / termination terms are not clear","MEDIUM","Exit Flexibility");
+  if(exit.depositRefund==="No") add("deposit-no-refund","Security deposit is explicitly non-refundable on exit","MEDIUM","Exit Flexibility");
+
+  // ---- Company support / reference ----
+  if(!meta.existName || !meta.existPhone) add("no-reference","No existing-distributor reference obtained to cross-check claims","LOW","Company Support");
+
+  return items;
+}
+/* Legacy-compatible wrapper used across dashboard/comparison/decision code */
+function computeRiskFlags(c){
+  const items = computeRiskItems(c);
+  return { flags: items.map(i=>i.text), items, hasFatal: items.some(i=>i.severity==="FATAL") };
+}
+function riskLevelFromItems(items){
+  if(items.some(i=>i.severity==="FATAL")) return {key:"VERYHIGH",label:"FATAL RISK"};
+  const high = items.filter(i=>i.severity==="HIGH").length;
+  const med = items.filter(i=>i.severity==="MEDIUM").length;
+  const weighted = high*3 + med*1;
+  if(weighted<=1) return {key:"LOW",label:"LOW RISK"};
+  if(weighted<=4) return {key:"MEDIUM",label:"MEDIUM RISK"};
+  if(weighted<=8) return {key:"HIGH",label:"HIGH RISK"};
+  return {key:"VERYHIGH",label:"VERY HIGH RISK"};
+}
+function riskLevel(items_or_count){
+  // backward-compatible: accepts either an items array or a legacy flag count
+  if(Array.isArray(items_or_count)) return riskLevelFromItems(items_or_count);
+  const n = items_or_count;
+  if(n<=2) return {key:"LOW",label:"LOW RISK"};
+  if(n<=5) return {key:"MEDIUM",label:"MEDIUM RISK"};
+  if(n<=9) return {key:"HIGH",label:"HIGH RISK"};
+  return {key:"VERYHIGH",label:"VERY HIGH RISK"};
+}
+function renderRiskSection(){
+  const c = curCompany();
+  const items = computeRiskItems(c);
+  const level = riskLevelFromItems(items);
+  const bySeverity = {FATAL:[],HIGH:[],MEDIUM:[],LOW:[]};
+  items.forEach(i=>bySeverity[i.severity].push(i));
+  const sevMeta = {
+    FATAL:{label:"🚫 FATAL — blocks investment until resolved",cls:"bad"},
+    HIGH:{label:"🔴 High Risk",cls:"bad"},
+    MEDIUM:{label:"🟠 Medium Risk",cls:"warn"},
+    LOW:{label:"🟡 Low Risk",cls:"warn"},
+  };
+  return `
+  <div style="text-align:center;">
+    <span class="risk-badge risk-${level.key}">${level.label}</span>
+    <div class="explain" style="margin-top:6px;">${items.length} risk item(s) found across ${Object.keys(RISK_CATEGORY_WEIGHT).length} weighted categories.</div>
+  </div>
+  ${bySeverity.FATAL.length?`<div class="warning-banner" style="margin-top:14px;">🚫 ${bySeverity.FATAL.length} FATAL risk(s) — final decision cannot be "Invest" until resolved</div>`:""}
+  <div style="margin-top:8px;">
+    ${["FATAL","HIGH","MEDIUM","LOW"].filter(s=>bySeverity[s].length).map(s=>`
+      <div class="section-title" style="margin-top:16px;color:var(--${sevMeta[s].cls});">${sevMeta[s].label} (${bySeverity[s].length})</div>
+      ${bySeverity[s].map(i=>`<div class="flag-item"><div class="flag-dot" style="background:var(--${sevMeta[s].cls});"></div><span>${esc(i.text)} <span style="color:var(--ink-faint);font-weight:600;">— ${esc(i.category)}</span></span></div>`).join("")}
+    `).join("")}
+    ${items.length===0?`<div class="alert good">✓ No major risk detected from entered data. Still verify all documents in original before paying.</div>`:""}
+  </div>
+  <div class="section-title" style="margin-top:18px;">Category Weighting (fixed, visible)</div>
+  <div style="margin-top:4px;">
+    ${Object.entries(RISK_CATEGORY_WEIGHT).map(([k,v])=>`<div class="flag-item" style="border-bottom:1px solid var(--border-soft);"><span style="flex:1;">${k}</span><b style="font-size:12px;">${v}</b></div>`).join("")}
+  </div>
+  `;
+}
+
+/* ---- Score ---- */
+/* 10-category weighted score. A high total is NEVER allowed to override a FATAL risk —
+   that check lives in finalDecision(), the score itself just reports honestly. */
+function computeScore(c){
+  const products = c.products;
+  const w = weightedMargins(products);
+  const total = num(c.investment.total);
+  const breakdown = num(c.investment.inventory)+num(c.investment.branding)+num(c.investment.registration)+num(c.investment.transport)+num(c.investment.deposit)+num(c.investment.gst)+num(c.investment.other);
+  const reconciled = total>0 && Math.abs(total-breakdown)<1;
+  const docPct = docVerificationPct(c);
+  const riskItems = computeRiskItems(c);
+  const hasFatal = riskItems.some(i=>i.severity==="FATAL");
+
+  const marginComponent = Math.max(0,Math.min(10, w.weightedMarginPct/2.5)); // 25% weighted margin = 10/10
+  const gstKnownFraction = products.length ? products.filter(p=>!computeEffectivePrice(p).gstUnknown).length/products.length : 0;
+
+  const financialEconomics = marginComponent*0.5 + (reconciled?10:(total>0?0:5))*0.5;
+  const productMargin = marginComponent*0.7 + (gstKnownFraction*10)*0.3;
+  const t = c.territory;
+  const territoryProtection = t.canAppoint==="Yes" ? 0 :
+    (t.type==="Exclusive" && t.agreementMentions==="Yes" && c.documents.territoryLetter==="Verified") ? 10 :
+    (t.type==="Exclusive" && t.agreementMentions==="Yes") ? 7 :
+    t.type==="Exclusive" ? 5 : t.type==="Non-exclusive" ? 2 : 1;
+  let legalDocs = docPct/10;
+  if(c.documents.distAgreement!=="Verified") legalDocs = Math.min(legalDocs,4);
+  if(!c.meta.legalName || !c.meta.gstin) legalDocs = Math.min(legalDocs,2);
+  let returnCount=0;
+  ["leakage","breakage","mfgDefect","nearExpiry","expiredReturn","slowMoving","unsold"].forEach(k=>{ if(c.returns[k]==="Yes") returnCount++; });
+  const returnRisk = Math.min(10, returnCount*(10/7));
+  let targetsPressure = 10;
+  if(c.target.failureConsequence==="Compulsory") targetsPressure -= 4;
+  if(c.reorder.moq && /\d{3,}/.test(c.reorder.moq)) targetsPressure -= 3;
+  targetsPressure = Math.max(0,targetsPressure);
+  const companySupport = c.scores.marketingSup*0.7 + ((c.meta.existName&&c.meta.existPhone)?10:3)*0.3;
+  let creditCashFlow = c.scores.creditTerms;
+  if(c.investment.paymentMethod==="Personal Account") creditCashFlow -= 4;
+  if(c.credit.terms==="Cash") creditCashFlow -= 2;
+  creditCashFlow = Math.max(0,Math.min(10,creditCashFlow));
+  const exitFlexibility = (c.exit.canCancel==="Yes"?4:0) + (c.exit.depositRefund==="Yes"?3:c.exit.depositRefund==="Conditional"?1.5:0) + (c.exit.stockReturn==="Yes"?3:c.exit.stockReturn==="Conditional"?1.5:0);
+  const overallReliability = c.scores.reliability*0.6 + (docPct/10)*0.4;
+
+  const weighted = {
+    "Financial Economics": {w:15, s:financialEconomics, category:"Financial Economics"},
+    "Product / Margin": {w:15, s:productMargin, category:"Product / Margin"},
+    "Territory Protection": {w:15, s:territoryProtection, category:"Territory Protection"},
+    "Legal & Documentation": {w:15, s:legalDocs, category:"Legal & Documentation"},
+    "Return / Inventory Risk": {w:10, s:returnRisk, category:"Return / Inventory Risk"},
+    "Targets & Sales Pressure": {w:8, s:targetsPressure, category:"Targets & Sales Pressure"},
+    "Company Support": {w:7, s:companySupport, category:"Company Support"},
+    "Credit / Cash Flow": {w:7, s:creditCashFlow, category:"Credit / Cash Flow"},
+    "Exit Flexibility": {w:5, s:exitFlexibility, category:"Exit Flexibility"},
+    "Overall Reliability": {w:3, s:overallReliability, category:"Overall Reliability"},
+  };
+  let total100=0;
+  Object.values(weighted).forEach(v=>{ total100 += (v.s/10)*v.w; });
+  return {weighted, total:Math.round(total100), hasFatal, docPct, reconciled};
+}
+function renderScoreSection(){
+  const c = curCompany();
+  const {weighted, total, hasFatal, docPct} = computeScore(c);
+  return `
+  <div class="score-ring-wrap">
+    <div class="score-num tabular">${total}<span style="font-size:16px;color:var(--ink-faint);">/100</span></div>
+    <div class="score-bars">
+      ${Object.entries(weighted).map(([k,v])=>`
+        <div class="score-bar-row">
+          <div class="lb">${k}</div>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:${(v.s/10*100)}%"></div></div>
+          <div class="pt">${v.s.toFixed(1)}/10</div>
+        </div>`).join("")}
+    </div>
+  </div>
+  <div class="result-box" style="margin-top:12px;">
+    <div class="result-row"><span>Verification Percentage</span><span class="v tabular">${docPct}%</span></div>
+    <div class="result-row"><span>Fatal Risk Status</span><span class="v tabular" style="color:${hasFatal?'var(--bad)':'var(--good)'};">${hasFatal?"FATAL RISK PRESENT":"None detected"}</span></div>
+  </div>
+  ${hasFatal?`<div class="alert bad">A high score here does NOT mean "safe" — at least one fatal risk exists (see Risk Analysis). Final decision cannot be "Invest" until it is resolved.</div>`:""}
+  <div class="section-title" style="margin-top:20px;">Manual Score (Subjective — 1 to 10)</div>
+  <div class="explain" style="margin:-4px 2px 4px;">Yeh apni judgement se bharein, jo numbers se calculate nahi ho sakta.</div>
+  ${renderSlider("marketFit","Product Demand / Market Fit")}
+  ${renderSlider("reliability","Company Reliability (apna assessment)")}
+  ${renderSlider("marketingSup","Marketing Support Quality")}
+  ${renderSlider("creditTerms","Credit / Payment Terms Comfort")}
+  `;
+}
+function renderSlider(key,label){
+  const v = curCompany().scores[key];
+  return `<div class="slider-row">
+    <label><span>${label}</span><span>${v}/10</span></label>
+    <input type="range" min="1" max="10" value="${v}" data-scoreslider="${key}">
+  </div>`;
+}
+
+/* ================= DASHBOARD ================= */
+function companySummary(c){
+  const total = num(c.investment.total);
+  const w = weightedMargins(c.products);
+  const stockVal = w.totalEffCost;
+  const avgMargin = w.weightedMarginPct;
+  const items = computeRiskItems(c);
+  const level = riskLevelFromItems(items);
+  const hasFatal = items.some(i=>i.severity==="FATAL");
+  const {total:score} = computeScore(c);
+  const filled = total>0 && c.products.length>0;
+  return {total,stockVal,avgMargin,level,score,filled,hasFatal,riskItems:items};
+}
+function renderDashboard(){
+  const c1=state.c1, c2=state.c2;
+  const s1 = companySummary(c1), s2 = companySummary(c2);
+  function card(key,c,s){
+    return `
+    <div class="company-card ${s.filled?'filled':''}">
+      <span class="status-tag ${s.filled?'filled':''}">${s.filled?'Filled':'Not Filled'}</span>
+      ${(s.hasFatal && s.filled)?`<span class="status-tag" style="background:var(--bad-soft);color:var(--bad);margin-left:6px;">🚫 FATAL RISK</span>`:""}
+      <h3>${esc(c.name)}</h3>
+      <div class="explain">${esc(c.meta.legalName)||"Company details abhi add nahi hui"}</div>
+      <div class="mini-stat-grid">
+        <div class="mini-stat"><span class="lbl">Investment</span><span class="val tabular">${s.total>0?inr(s.total):"--"}</span></div>
+        <div class="mini-stat"><span class="lbl">Stock Value (Effective)</span><span class="val tabular">${s.stockVal>0?inr(s.stockVal):"--"}</span></div>
+        <div class="mini-stat"><span class="lbl">Weighted Margin</span><span class="val tabular">${c.products.length?pct(s.avgMargin):"--"}</span></div>
+        <div class="mini-stat"><span class="lbl">Monthly Target</span><span class="val tabular">${c.target.monthly?inr(num(c.target.monthly)):"--"}</span></div>
+        <div class="mini-stat"><span class="lbl">Territory</span><span class="val">${esc(c.territory.type)||"--"}</span></div>
+        <div class="mini-stat"><span class="lbl">Risk Score</span><span class="val">${s.filled?s.level.label:"--"}</span></div>
+      </div>
+      <div class="mini-stat" style="margin-top:8px;"><span class="lbl">Final Score</span><span class="val tabular">${s.filled?s.score+"/100":"--"}</span></div>
+      <button class="card-action" data-opencompany="${key}">${s.filled?"Continue":"Start"} ${esc(c.name)} →</button>
+    </div>`;
+  }
+  return `
+  <div class="section-title">Overview</div>
+  <div class="dash-grid">
+    ${card("c1",c1,s1)}
+    ${card("c2",c2,s2)}
+  </div>
+  <div class="dash-actions">
+    <button class="btn-primary-lg" id="finalCompareBtn">Final Comparison →</button>
+    <button class="btn-secondary" id="loadDemoBtn">Load Demo / Sample Data</button>
+    <button class="btn-secondary" id="resetAllBtn">Reset All Data</button>
+  </div>
+  <div class="explain" style="margin-top:14px;text-align:center;">🔒 Your data is stored locally in this browser. Nothing is sent anywhere.</div>
+
+  <div class="section-title" style="margin-top:22px;">Import Data</div>
+  <div class="explain" style="margin:-4px 2px 8px;">Import a Product CSV or Full Comparison CSV exported by this app. Existing data is never overwritten without your confirmation.</div>
+  <input type="file" id="csvImportFile" accept=".csv,text/csv" style="display:none;">
+  <div class="dash-actions">
+    <button class="btn-secondary" id="csvImportBtn">📥 Import CSV</button>
+  </div>
+  <div id="csvImportPreviewBox">${renderCsvImportPreview()}</div>
+  <div class="footer-space"></div>
+  `;
+}
+/* ---------- CSV import (robust: quoted fields, embedded commas, header validation) ---------- */
+let csvImportState = null; // transient, not persisted
+function parseCSV(text){
+  const rows=[]; let row=[]; let field=''; let inQuotes=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(inQuotes){
+      if(ch==='"'){ if(text[i+1]==='"'){ field+='"'; i++; } else inQuotes=false; }
+      else field+=ch;
+    } else {
+      if(ch==='"') inQuotes=true;
+      else if(ch===','){ row.push(field); field=''; }
+      else if(ch==='\r'){ /* ignore, \n handles line break */ }
+      else if(ch==='\n'){ row.push(field); rows.push(row); row=[]; field=''; }
+      else field+=ch;
+    }
+  }
+  if(field.length || row.length){ row.push(field); rows.push(row); }
+  return rows.filter(r => !(r.length===1 && r[0].trim()===""));
+}
+const PRODUCT_CSV_V2_HEADERS = ["Company","Product","Category","Pack Size","Qty","MRP","Listed Distributor Price","GST %","GST Type","Scheme Type","Scheme Value","Retailer Selling Price"];
+function detectCsvType(headers){
+  const h = headers.map(x=>x.trim());
+  if(h.includes("GSTIN") && h.includes("Legal Name")) return "comparison";
+  if(h.includes("Product") && (h.includes("MRP")||h.includes("Distributor Price")||h.includes("Listed Distributor Price"))) return "product";
+  return "unknown";
+}
+function handleCsvFile(file){
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const rows = parseCSV(String(reader.result));
+      if(rows.length<2){ csvImportState={error:"CSV file has no data rows."}; render(); return; }
+      const headers = rows[0];
+      const type = detectCsvType(headers);
+      if(type==="unknown"){ csvImportState={error:"Could not recognize CSV headers. Use a file exported by this app (Product CSV or Full Comparison CSV)."}; render(); return; }
+      const dataRows = rows.slice(1);
+      const errors = [];
+      const parsedRows = [];
+      dataRows.forEach((r,i)=>{
+        if(r.length!==headers.length){ errors.push(`Row ${i+2}: column count mismatch (${r.length} vs ${headers.length}) — skipped`); return; }
+        const obj = {};
+        headers.forEach((h,j)=>obj[h.trim()]=r[j]);
+        if(type==="product"){
+          if(obj["Qty"]!==undefined && obj["Qty"]!=="" && isNaN(parseFloat(obj["Qty"]))){ errors.push(`Row ${i+2}: invalid Qty "${obj["Qty"]}" — skipped`); return; }
+          if(obj["MRP"]!==undefined && obj["MRP"]!=="" && isNaN(parseFloat(obj["MRP"]))){ errors.push(`Row ${i+2}: invalid MRP "${obj["MRP"]}" — skipped`); return; }
+        }
+        parsedRows.push(obj);
+      });
+      csvImportState = {type, headers, rows:parsedRows, errors, fileName:file.name, target:null, mode:"append"};
+      render();
+    }catch(e){
+      csvImportState = {error:"Failed to parse this file: "+e.message};
+      render();
+    }
+  };
+  reader.onerror = ()=>{ csvImportState={error:"Could not read the file."}; render(); };
+  reader.readAsText(file);
+}
+function applyCsvImport(){
+  const st = csvImportState;
+  if(!st || !st.target) return;
+  const c = st.target==="c1" ? state.c1 : state.c2;
+  let importedCount = 0;
+  if(st.type==="product"){
+    const isV2 = st.headers.includes("Listed Distributor Price") || st.headers.includes("GST Type");
+    const newProducts = st.rows.map(obj=>{
+      const p = {id:uid(),name:obj["Product"]||"",category:obj["Category"]||"",packSize:obj["Pack Size"]||"",
+        qty:obj["Qty"]||"", mrp:obj["MRP"]||"", distPrice:obj[isV2?"Listed Distributor Price":"Distributor Price"]||"",
+        gstPct:obj["GST %"]||obj["GST%"]||"", gstType:obj["GST Type"]||"Unknown",
+        schemeType: obj["Scheme Type"]||"None", scheme: obj["Scheme"]||obj["Scheme Value"]||"",
+        schemePct:"",schemeFlat:"",schemeFreeUnits:"",schemeBuyX:"",schemeGetY:"",
+        retailPrice: obj["Retailer Selling Price"]||""};
+      if(p.schemeType==="Percentage") p.schemePct = obj["Scheme Value"]||"";
+      if(p.schemeType==="Flat") p.schemeFlat = obj["Scheme Value"]||"";
+      if(p.schemeType==="Free Units") p.schemeFreeUnits = obj["Scheme Value"]||"";
+      if(p.schemeType==="Buy X Get Y" && obj["Scheme Value"] && obj["Scheme Value"].includes("/")){
+        const [x,y] = obj["Scheme Value"].split("/"); p.schemeBuyX=x; p.schemeGetY=y;
+      }
+      return p;
+    });
+    if(st.mode==="replace") c.products = newProducts; else c.products = c.products.concat(newProducts);
+    importedCount = newProducts.length;
+  } else if(st.type==="comparison"){
+    const row = st.rows.find(r=>r["Company"]===c.name) || st.rows[0];
+    if(row){
+      if(row["Legal Name"]) c.meta.legalName = row["Legal Name"];
+      if(row["GSTIN"]) c.meta.gstin = row["GSTIN"];
+      if(row["Investment"]) c.investment.total = row["Investment"];
+      if(row["District"]) c.territory.district = row["District"];
+      if(row["Territory Type"]) c.territory.type = row["Territory Type"];
+      if(row["Monthly Target"]) c.target.monthly = row["Monthly Target"];
+      if(row["Quarterly Target"]) c.target.quarterly = row["Quarterly Target"];
+      if(row["Annual Target"]) c.target.annual = row["Annual Target"];
+      if(row["Reorder MOQ"]) c.reorder.moq = row["Reorder MOQ"];
+      if(row["Reorder Price"]) c.reorder.price = row["Reorder Price"];
+      if(row["Credit Terms"]) c.credit.terms = row["Credit Terms"];
+      importedCount = 1;
+    }
+  }
+  scheduleSave();
+  showToast(`Imported ${importedCount} record(s) into ${esc(c.name)}`);
+  csvImportState = null;
+  render();
+}
+function renderCsvImportPreview(){
+  const st = csvImportState;
+  if(!st) return "";
+  if(st.error) return `<div class="alert bad" style="margin-top:10px;">${esc(st.error)}</div>`;
+  return `
+  <div class="result-box" style="margin-top:10px;">
+    <div class="result-row"><span>File</span><span class="v">${esc(st.fileName)}</span></div>
+    <div class="result-row"><span>Detected Type</span><span class="v">${st.type==="product"?"Product CSV":"Full Comparison CSV"}</span></div>
+    <div class="result-row"><span>Valid Rows</span><span class="v tabular">${st.rows.length}</span></div>
+    <div class="result-row"><span>Errors</span><span class="v tabular" style="color:${st.errors.length?'var(--bad)':'var(--good)'};">${st.errors.length}</span></div>
+  </div>
+  ${st.errors.length?`<div class="alert warn">${st.errors.slice(0,5).map(e=>esc(e)).join("<br>")}${st.errors.length>5?`<br>+ ${st.errors.length-5} more`:""}</div>`:""}
+  <div class="field">
+    <label>Import into</label>
+    <div class="pillgroup" id="csvTargetGroup">
+      <button type="button" data-csvtarget="c1" class="${st.target==='c1'?'sel':''}">${esc(state.c1.name)}</button>
+      <button type="button" data-csvtarget="c2" class="${st.target==='c2'?'sel':''}">${esc(state.c2.name)}</button>
+    </div>
+  </div>
+  ${st.type==="product"?`
+  <div class="field">
+    <label>Mode</label>
+    <div class="pillgroup" id="csvModeGroup">
+      <button type="button" data-csvmode="append" class="${st.mode==='append'?'sel':''}">Append</button>
+      <button type="button" data-csvmode="replace" class="${st.mode==='replace'?'sel bad':''}">Replace Existing</button>
+    </div>
+  </div>`:""}
+  <div class="dash-actions">
+    <button class="btn-primary-lg" id="csvImportConfirm" ${st.target?"":"disabled"}>Confirm Import${st.mode==='replace'?' (Replaces existing data — cannot be undone)':''}</button>
+    <button class="btn-secondary" id="csvImportCancel">Cancel</button>
+  </div>
+  `;
+}
+
+/* ================= COMPANY DETAIL PAGE ================= */
+function renderCompanyPage(){
+  const c = curCompany();
+  const docPct = docVerificationPct(c);
+  return `
+  ${accordionWrap("meta","Company Details","Basic company aur contact info",renderMetaSection())}
+  ${accordionWrap("investment","Investment","Total investment aur breakdown",renderInvestmentSection())}
+  ${accordionWrap("products","Inventory / Stock","Products aur unka margin",renderProductsSection(), c.products.length?`<span class="accordion-badge" style="background:var(--accent-soft);color:var(--accent);">${c.products.length}</span>`:"")}
+  ${accordionWrap("territory","Territory / District Rights","Exclusive hai ya nahi",renderTerritorySection())}
+  ${accordionWrap("target","Monthly / Quarterly Target","Sales target aur consequence",renderTargetSection())}
+  ${accordionWrap("reorder","Reorder Terms","MOQ, price, credit",renderReorderSection())}
+  ${accordionWrap("transport","Transportation","First order vs reorder transport",renderTransportSection())}
+  ${accordionWrap("returns","Damage / Expiry / Return","Unsold aur damaged stock policy",renderReturnsSection())}
+  ${accordionWrap("marketing","Marketing Support","Branding aur promotional support",renderMarketingSection())}
+  ${accordionWrap("staff","Staff / Sales Support","Company aur distributor staff",renderStaffSection())}
+  ${accordionWrap("credit","Credit Terms","Payment terms",renderCreditSection())}
+  ${accordionWrap("exit","Exit Policy","Cancel karne ke rules",renderExitSection())}
+  ${accordionWrap("documents","Document Verification","Kaunse documents verify hue",renderDocumentsSection(), `<span class="accordion-badge" style="background:${docPct>=70?'var(--good-soft)':'var(--warn-soft)'};color:${docPct>=70?'var(--good)':'var(--warn)'};">${docPct}%</span>`)}
+  ${accordionWrap("paymentSafety","Payment Safety Checklist","Before You Pay — verification checklist",renderPaymentSafetySection(), paymentSafetyStatus(c).safeToPay?"":`<span class="accordion-badge" style="background:var(--bad-soft);color:var(--bad);">🚫</span>`)}
+  ${accordionWrap("simulator","₹ Sales Profit Simulator","Estimated profit aur recovery period",renderSimulatorSection())}
+  ${accordionWrap("risk","Risk Analysis","Automatic red flag detection",renderRiskSection())}
+  ${accordionWrap("negotiate","Before You Pay — Negotiate These","Auto-generated from detected weaknesses",renderNegotiationSection())}
+  ${accordionWrap("score","Company Score","Weighted score out of 100",renderScoreSection())}
+  <div class="footer-space"></div>
+  `;
+}
+
+/* ================= MEETING MODE ================= */
+function allQuestions(c){
+  return QUESTION_BANK.map(q=>q.replace("{investment}", num(c.investment.total)? inr(num(c.investment.total)).replace("₹",""):"____"))
+    .concat(c.meeting.customQuestions);
+}
+function renderMeetingMode(){
+  const c = curCompany();
+  const qs = allQuestions(c);
+  let idx = state.meetingIndex[state.activeCompany];
+  if(idx>=qs.length) idx=qs.length-1;
+  if(idx<0) idx=0;
+  const answered = Object.keys(c.meeting.answers).length;
+  const curAns = c.meeting.answers[idx] || {status:"", note:""};
+  return `
+  <div class="section-title">Meeting Mode — ${c.name}</div>
+  <div class="explain" style="margin:-4px 2px 10px;">Salesperson ke saamne baithkar ek-ek sawaal poochein.</div>
+  <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-faint);font-weight:600;">
+    <span>Progress</span><span>${answered}/${qs.length} answered</span>
+  </div>
+  <div class="meeting-progress-bar"><div class="meeting-progress-fill" style="width:${(answered/qs.length*100)}%"></div></div>
+
+  <div class="meeting-qcard">
+    <div class="meeting-qnum">Question ${idx+1} / ${qs.length}</div>
+    <div class="meeting-qtext">${qs[idx]}</div>
+    <div class="field" style="margin-top:16px;">
+      <label>Answer / Notes</label>
+      <textarea id="meetingNote" placeholder="Salesman ne kya bola likhein...">${curAns.note||""}</textarea>
+    </div>
+    ${photoFieldHtml("meeting", idx)}
+    <div class="pillgroup" id="meetingStatusGroup" style="margin-top:10px;">
+      <button type="button" data-mstatus="Verified" class="${curAns.status==='Verified'?'sel good':''}">✓ Verified</button>
+      <button type="button" data-mstatus="Conditional" class="${curAns.status==='Conditional'?'sel warn':''}">⚠️ Conditional</button>
+      <button type="button" data-mstatus="No" class="${curAns.status==='No'?'sel bad':''}">✕ No</button>
+      <button type="button" data-mstatus="Not Clear" class="${curAns.status==='Not Clear'?'sel':''}">? Not Clear</button>
+    </div>
+    <div class="meeting-nav">
+      <button id="meetingPrev" ${idx===0?"disabled":""}>← Previous</button>
+      <button id="meetingNext" ${idx===qs.length-1?"disabled":""}>Next →</button>
+    </div>
+  </div>
+
+  <div class="meeting-jump">
+    ${qs.map((q,i)=>`<button data-jumpq="${i}" class="${i===idx?'cur':''} ${c.meeting.answers[i]?.status?'answered':''}">${i+1}</button>`).join("")}
+  </div>
+
+  <div class="section-title" style="margin-top:20px;">Add Custom Question</div>
+  <div class="custom-q-add">
+    <input type="text" id="customQInput" placeholder="Apna sawaal likhein...">
+    <button id="customQAdd">Add</button>
+  </div>
+  <div class="footer-space"></div>
+  `;
+}
+
+/* ================= COMPARISON ================= */
+function cmpTag(val, positive){
+  if(val==="Yes"||val==="Verified"||val===positive) return `<span class="tag-ok">✓ ${val}</span>`;
+  if(val==="No"||val==="Not Available") return `<span class="tag-bad">✕ ${val}</span>`;
+  if(val==="Not Clear"||val==="Conditional"||val==="Not Verified") return `<span class="tag-warn">⚠️ ${val}</span>`;
+  return val||"—";
+}
+function renderComparison(){
+  const c1=state.c1, c2=state.c2;
+  const s1=companySummary(c1), s2=companySummary(c2);
+  const sc1=computeScore(c1), sc2=computeScore(c2);
+  const w1=weightedMargins(c1.products), w2=weightedMargins(c2.products);
+  const sim1=computeSimulator(c1), sim2=computeSimulator(c2);
+  const d1=companyDecision(c1), d2=companyDecision(c2);
+  const bothHaveProducts = c1.products.length>0 && c2.products.length>0;
+  const bothHaveSales = num(c1.simulator.monthlySales)>0 && num(c2.simulator.monthlySales)>0;
+  // rows: [label, v1, v2, {higherIsBetter, meaningful}]
+  const rows = [
+    ["Investment", inr(num(c1.investment.total)), inr(num(c2.investment.total)), null],
+    ["Inventory Value (Effective)", inr(s1.stockVal), inr(s2.stockVal), null],
+    ["Number of Products", c1.products.length, c2.products.length, null],
+    ["Weighted Distributor Margin", pct(s1.avgMargin), pct(s2.avgMargin), bothHaveProducts?{a:s1.avgMargin,b:s2.avgMargin}:null],
+    ["Weighted Distributor Markup", pct(w1.weightedMarkupPct), pct(w2.weightedMarkupPct), bothHaveProducts?{a:w1.weightedMarkupPct,b:w2.weightedMarkupPct}:null],
+    ["Monthly Target", c1.target.monthly?inr(num(c1.target.monthly)):"—", c2.target.monthly?inr(num(c2.target.monthly)):"—", null],
+    ["Territory Type", esc(c1.territory.type)||"—", esc(c2.territory.type)||"—", null],
+    ["Transport (First Order)", cmpTag(c1.transport.firstOrder,"Free"), cmpTag(c2.transport.firstOrder,"Free"), null],
+    ["Damage Replacement", cmpTag(c1.returns.breakage,"Yes"), cmpTag(c2.returns.breakage,"Yes"), null],
+    ["Expiry Return", cmpTag(c1.returns.expiredReturn,"Yes"), cmpTag(c2.returns.expiredReturn,"Yes"), null],
+    ["Unsold Return", cmpTag(c1.returns.unsold,"Yes"), cmpTag(c2.returns.unsold,"Yes"), null],
+    ["Credit Terms", esc(c1.credit.terms)||"—", esc(c2.credit.terms)||"—", null],
+    ["Exit Policy Clear", cmpTag(c1.exit.canCancel,"Yes"), cmpTag(c2.exit.canCancel,"Yes"), null],
+    ["Document Verification", docVerificationPct(c1)+"%", docVerificationPct(c2)+"%", {a:docVerificationPct(c1),b:docVerificationPct(c2)}],
+    ["Risk Level", s1.level.label, s2.level.label, null],
+    ["Fatal Risk", s1.hasFatal?"🚫 Present":"None", s2.hasFatal?"🚫 Present":"None", null],
+    ["Est. Monthly Net Profit", bothHaveSales?inr(sim1.netProfit):"—", bothHaveSales?inr(sim2.netProfit):"—", bothHaveSales?{a:sim1.netProfit,b:sim2.netProfit}:null],
+    ["Recovery (months)", sim1.recoveryMonths!=null?sim1.recoveryMonths.toFixed(1):"Not achieved", sim2.recoveryMonths!=null?sim2.recoveryMonths.toFixed(1):"Not achieved", (sim1.recoveryMonths!=null&&sim2.recoveryMonths!=null)?{a:-sim1.recoveryMonths,b:-sim2.recoveryMonths}:null],
+    ["Final Score", sc1.total+"/100", sc2.total+"/100", {a:sc1.total,b:sc2.total}],
+    ["Decision", esc(d1.decision), esc(d2.decision), {a:DECISION_RANK[d1.decision],b:DECISION_RANK[d2.decision]}],
+  ];
+  return `
+  <div class="section-title">Company 1 vs Company 2</div>
+  <div class="explain" style="margin:-4px 2px 8px;">A side is highlighted only when the comparison is mathematically meaningful (both sides have data). No winner shown for incomplete rows.</div>
+  <div class="compare-scroll">
+  <table class="compare-table">
+    <thead><tr><th>Factor</th><th>${esc(c1.name)}</th><th>${esc(c2.name)}</th></tr></thead>
+    <tbody>
+      ${rows.map(r=>{
+        let c1cls="",c2cls="";
+        if(r[3]){
+          if(r[3].a>r[3].b) c1cls="tag-ok"; else if(r[3].b>r[3].a) c2cls="tag-ok";
+        }
+        return `<tr><td class="rowlabel">${r[0]}</td><td class="${c1cls}">${r[1]}</td><td class="${c2cls}">${r[2]}</td></tr>`;
+      }).join("")}
+    </tbody>
+  </table>
+  </div>
+  <div class="footer-space"></div>
+  `;
+}
+
+/* ================= FINAL DECISION ================= */
+/* Priority order per spec Part 42:
+   1. Critical data incomplete  2. Fatal risk  3. Critical documents missing
+   4. Economics negative  5. Territory not protected  6. Risk/score.
+   A high score can NEVER promote a company past a FATAL risk or missing critical docs. */
+const DECISION_RANK = {"DATA INCOMPLETE":0,"DO NOT INVEST YET":1,"HIGH RISK — AVOID":2,"NEGOTIATE FIRST":3,"INVEST AFTER VERIFICATION":4,"INVEST":5};
+const CRITICAL_DOCS = [["distAgreement","Distributorship Agreement"],["returnPolicyDoc","Return Policy"],["gstInvoiceDoc","GST Invoice"]];
+function companyDecision(c){
+  const reasons = [];
+  const items = computeRiskItems(c);
+  const hasFatal = items.some(i=>i.severity==="FATAL");
+  const dataComplete = num(c.investment.total)>0 && c.products.length>0 && !!c.meta.legalName;
+  const missingCriticalDocs = CRITICAL_DOCS.filter(([k])=>c.documents[k]!=="Verified").map(([,label])=>label);
+  const t = c.territory;
+  const territoryOk = t.canAppoint!=="Yes" && (t.type==="Exclusive"?t.agreementMentions==="Yes":false);
+  const territoryCritical = t.canAppoint==="Yes";
+  const sim = computeSimulator(c);
+  const economicsNegative = c.simulator.monthlySales!=="" && sim.netProfit<=0;
+  const {total:score} = computeScore(c);
+  const level = riskLevelFromItems(items);
+
+  let decision;
+  if(!dataComplete){
+    decision = "DATA INCOMPLETE";
+    reasons.push("Investment, product/stock data, or company legal name is not yet fully entered.");
+  } else if(hasFatal){
+    decision = "DO NOT INVEST YET";
+    items.filter(i=>i.severity==="FATAL").forEach(i=>reasons.push("FATAL: "+i.text));
+  } else if(territoryCritical){
+    decision = "DO NOT INVEST YET";
+    reasons.push("Company says it can appoint another distributor in your claimed territory — direct contradiction of exclusivity.");
+  } else if(missingCriticalDocs.length>0){
+    decision = "INVEST AFTER VERIFICATION";
+    reasons.push("Critical documents not verified: "+missingCriticalDocs.join(", "));
+  } else if(economicsNegative){
+    decision = "HIGH RISK — AVOID";
+    reasons.push("At entered sales/margin/expense assumptions, net operating profit is zero or negative.");
+  } else if(!territoryOk){
+    decision = "NEGOTIATE FIRST";
+    reasons.push("Territory protection is not fully confirmed in writing.");
+  } else if(level.key==="HIGH"||level.key==="VERYHIGH"){
+    decision = "NEGOTIATE FIRST";
+    reasons.push(`Risk level is ${level.label} — resolve open points before paying.`);
+  } else {
+    decision = "INVEST";
+    reasons.push(`Territory protected, critical documents verified, economics viable, risk level ${level.label}.`);
+  }
+  reasons.push(`Score: ${score}/100 (informational — does not override the checks above)`);
+  return {decision, reasons, hasFatal, missingCriticalDocs, score, level, items};
+}
+function finalDecision(){
+  const c1=state.c1, c2=state.c2;
+  const d1 = companyDecision(c1), d2 = companyDecision(c2);
+  const r1 = DECISION_RANK[d1.decision], r2 = DECISION_RANK[d2.decision];
+
+  let decision, reasons=[], pendingItems=[], style;
+  const bothUninvestable = r1<=1 && r2<=1; // DATA INCOMPLETE or DO NOT INVEST YET for both
+  if(d1.decision==="DATA INCOMPLETE" && d2.decision==="DATA INCOMPLETE"){
+    decision = "DATA INCOMPLETE"; style="bad";
+    reasons.push("Complete both companies' data first — investment, products and company legal name at minimum.");
+  } else if(bothUninvestable){
+    decision = "NEITHER — Abhi invest mat karo"; style="bad";
+    reasons.push(`${c1.name}: ${d1.decision} — ${d1.reasons[0]||""}`);
+    reasons.push(`${c2.name}: ${d2.decision} — ${d2.reasons[0]||""}`);
+    reasons.push("Both opportunities have unacceptable risk right now.");
+  } else {
+    const better = r1>=r2 ? c1 : c2;
+    const betterD = r1>=r2 ? d1 : d2;
+    const worseD = r1>=r2 ? d2 : d1;
+    decision = `${better.name} — ${betterD.decision}`;
+    style = betterD.decision==="INVEST"||betterD.decision==="INVEST AFTER VERIFICATION" ? "good":"bad";
+    betterD.reasons.forEach(r=>reasons.push(`${better.name}: ${r}`));
+    if(r1===r2) reasons.push(`Both at same decision tier — ${better.name} chosen on higher score (${betterD.score} vs ${worseD.score}).`);
+    reasons.push(`Comparison: ${(r1>=r2?c2:c1).name} is ${worseD.decision.toLowerCase()} at this stage.`);
+  }
+
+  [c1,c2].forEach(c=>{
+    if(c.documents.distAgreement!=="Verified") pendingItems.push(`${c.name}: Agreement not verified`);
+    if(c.documents.returnPolicyDoc!=="Verified") pendingItems.push(`${c.name}: Return policy document not verified`);
+    if(c.documents.gstInvoiceDoc!=="Verified" && c.investment.gstInvoice!=="Yes") pendingItems.push(`${c.name}: GST invoice not confirmed`);
+    if(c.territory.agreementMentions!=="Yes") pendingItems.push(`${c.name}: Territory not verified in writing`);
+    if(c.products.length===0) pendingItems.push(`${c.name}: Stock list missing`);
+    if(c.returns.unsold==="Not Clear"||c.returns.unsold==="") pendingItems.push(`${c.name}: Return policy missing/unclear`);
+    if(c.investment.paymentMethod==="Personal Account") pendingItems.push(`${c.name}: Payment account is personal, not company — verify authorization`);
+  });
+
+  return {decision, reasons, pendingItems, style, d1, d2, score1:d1.score, score2:d2.score};
+}
+function renderFinalDecision(){
+  const {decision, reasons, pendingItems, style} = finalDecision();
+  return `
+  <div class="section-title">Final Decision</div>
+  <div class="decision-hero ${style}">
+    <div class="tag">Based on entered information</div>
+    <h2>${decision}</h2>
+  </div>
+  <div class="section-title">Why?</div>
+  <div class="reason-list">
+    ${reasons.map(r=>`<div class="reason-item"><span>${r.startsWith("⚠️")?"":"✓"}</span><span>${r}</span></div>`).join("")}
+  </div>
+  ${pendingItems.length?`
+  <div class="pending-box">
+    <h4>🚫 DO NOT PAY YET — Pending Verification</h4>
+    ${pendingItems.map(p=>`<div class="item">• ${p}</div>`).join("")}
+  </div>`:""}
+  <div class="disclaimer" style="margin-top:14px;">Yeh estimated aur entered-data-based analysis hai. Guaranteed profit ya guaranteed return ka koi claim nahi hai. Payment se pehle sabhi documents original me verify karein.</div>
+
+  <div class="section-title" style="margin-top:22px;">Export</div>
+  <div class="dash-actions">
+    <button class="btn-secondary" id="printReportBtn">🖨️ Print / Save as PDF</button>
+    <button class="btn-secondary" id="exportCsvBtn">⬇️ Product CSV (Simple)</button>
+    <button class="btn-secondary" id="exportCsvV2Btn">⬇️ Product CSV (Full — GST/Scheme)</button>
+    <button class="btn-secondary" id="exportComparisonCsvBtn">⬇️ Full Comparison CSV</button>
+    <button class="btn-secondary" id="exportJsonBtn">⬇️ Download Full Backup (JSON)</button>
+    <input type="file" id="jsonImportFile" accept=".json,application/json" style="display:none;">
+    <button class="btn-secondary" id="jsonImportBtn">⬆️ Restore Backup (JSON)</button>
+  </div>
+  <div class="footer-space"></div>
+  `;
+}
+
+/* ================= BOTTOM NAV ================= */
+const TABS = [
+  {id:"dashboard", label:"Dashboard", icon:`<path d="M3 13h8V3H3v10zM13 21h8V11h-8v10zM3 21h8v-6H3v6zM13 3v6h8V3h-8z"/>`},
+  {id:"company", label:"Company", icon:`<path d="M3 21h18M6 21V7l6-4 6 4v14M9 9h1M9 13h1M9 17h1M14 9h1M14 13h1M14 17h1"/>`},
+  {id:"meeting", label:"Meeting", icon:`<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>`},
+  {id:"compare", label:"Compare", icon:`<path d="M3 3v18h18M7 15l4-4 3 3 5-6"/>`},
+  {id:"decision", label:"Decision", icon:`<path d="M9 11l3 3L22 4M21 12v6a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2h11"/>`},
+];
+function renderBottomNav(){
+  const nav = document.getElementById("bottomnav");
+  nav.innerHTML = TABS.map(t=>`
+    <button data-tab="${t.id}" class="${state.activeTab===t.id?'active':''}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${t.icon}</svg>
+      ${t.label}
+    </button>`).join("");
+  nav.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{ state.activeTab=b.dataset.tab; render(); }));
+}
+function renderCompanySwitch(){
+  const box = document.getElementById("companySwitch");
+  box.innerHTML = `
+    <button class="pill-btn ${state.activeCompany==='c1'?'active':''}" data-switchc="c1">C1</button>
+    <button class="pill-btn ${state.activeCompany==='c2'?'active':''}" data-switchc="c2">C2</button>
+  `;
+  box.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{ state.activeCompany=b.dataset.switchc; render(); }));
+}
+
+/* ================= MASTER RENDER ================= */
+function render(){
+  renderBottomNav();
+  renderCompanySwitch();
+  const app = document.getElementById("app");
+  let html = "";
+  if(state.activeTab==="dashboard") html = renderDashboard();
+  else if(state.activeTab==="company") html = renderCompanyPage();
+  else if(state.activeTab==="meeting") html = renderMeetingMode();
+  else if(state.activeTab==="compare") html = renderComparison();
+  else if(state.activeTab==="decision") html = renderFinalDecision();
+  app.innerHTML = html;
+  attachPageEvents();
+}
+
+/* ================= EVENT WIRING PER PAGE ================= */
+function attachPageEvents(){
+  bindFieldEvents(document.getElementById("app"));
+  wirePhotoCapture();
+
+  // dashboard
+  document.querySelectorAll("[data-opencompany]").forEach(b=>b.addEventListener("click",()=>{
+    state.activeCompany = b.dataset.opencompany; state.activeTab="company"; render();
+  }));
+  const fcb = document.getElementById("finalCompareBtn");
+  if(fcb) fcb.addEventListener("click",()=>{ state.activeTab="compare"; render(); });
+  const ldb = document.getElementById("loadDemoBtn");
+  if(ldb) ldb.addEventListener("click",()=>{
+    state.c1 = demoCompany1(); state.c2 = demoCompany2(); scheduleSave(); render(); showToast("Demo data load ho gaya");
+  });
+  const rab = document.getElementById("resetAllBtn");
+  if(rab) rab.addEventListener("click",()=>{
+    if(confirm("Sara data reset karna hai? Yeh undo nahi ho sakta.")){
+      state = freshState(); scheduleSave(); render(); showToast("Data reset ho gaya");
+    }
+  });
+
+  // CSV import
+  const cib = document.getElementById("csvImportBtn");
+  const cif = document.getElementById("csvImportFile");
+  if(cib && cif) cib.addEventListener("click",()=>cif.click());
+  if(cif) cif.addEventListener("change",(e)=>{
+    if(e.target.files && e.target.files[0]) handleCsvFile(e.target.files[0]);
+    e.target.value = "";
+  });
+  document.querySelectorAll("[data-csvtarget]").forEach(b=>b.addEventListener("click",()=>{
+    if(csvImportState){ csvImportState.target = b.dataset.csvtarget; render(); }
+  }));
+  document.querySelectorAll("[data-csvmode]").forEach(b=>b.addEventListener("click",()=>{
+    if(csvImportState){ csvImportState.mode = b.dataset.csvmode; render(); }
+  }));
+  const cicf = document.getElementById("csvImportConfirm");
+  if(cicf) cicf.addEventListener("click",()=>{
+    if(csvImportState && csvImportState.mode==="replace" && !confirm("This will REPLACE existing products for the selected company. Continue?")) return;
+    applyCsvImport();
+  });
+  const cican = document.getElementById("csvImportCancel");
+  if(cican) cican.addEventListener("click",()=>{ csvImportState=null; render(); });
+
+  // accordion toggles
+  document.querySelectorAll("[data-toggle]").forEach(head=>{
+    head.addEventListener("click",()=>{
+      const id = head.dataset.toggle;
+      state.openSections[id] = !state.openSections[id];
+      render();
+      try{
+        const target = document.querySelector(`[data-accordion="${id}"]`);
+        if(target && typeof target.scrollIntoView === "function") target.scrollIntoView({behavior:"smooth", block:"start"});
+      }catch(e){ /* scrollIntoView unsupported in this host — non-fatal */ }
+    });
+  });
+
+  // products
+  const addP = document.getElementById("addProductBtn");
+  if(addP) addP.addEventListener("click",()=>{
+    curCompany().products.push({id:uid(),name:"",category:"",packSize:"",qty:"",mrp:"",distPrice:"",gstPct:"",gstType:"Unknown",
+      schemeType:"None",schemePct:"",schemeFlat:"",schemeFreeUnits:"",schemeBuyX:"",schemeGetY:"",scheme:"",retailPrice:""});
+    scheduleSave(); render();
+  });
+  document.querySelectorAll("[data-delp]").forEach(b=>b.addEventListener("click",()=>{
+    curCompany().products = curCompany().products.filter(p=>p.id!==b.dataset.delp);
+    scheduleSave(); render();
+  }));
+  document.querySelectorAll("[data-pfield]").forEach(inp=>{
+    const evt = inp.tagName==="SELECT" ? "change" : "input";
+    inp.addEventListener(evt,()=>{
+      const card = inp.closest(".product-card");
+      const pid = card.dataset.pid;
+      const p = curCompany().products.find(x=>x.id===pid);
+      if(!p) return;
+      p[inp.dataset.pfield] = inp.value;
+      scheduleSave();
+      if(inp.dataset.pfield==="schemeType" || inp.dataset.pfield==="gstType"){
+        render(); // field set changes (e.g. scheme sub-fields), needs full re-render
+      } else {
+        syncProductCardCalc(card);
+        const tot = document.getElementById("products-totals");
+        if(tot) tot.outerHTML = renderProductTotals();
+      }
+    });
+  });
+
+  // simulator margin source toggle
+  document.querySelectorAll("[data-marginsrc]").forEach(b=>b.addEventListener("click",()=>{
+    curCompany().simulator.marginSource = b.dataset.marginsrc;
+    scheduleSave(); render();
+  }));
+
+  // score sliders
+  document.querySelectorAll("[data-scoreslider]").forEach(sl=>{
+    sl.addEventListener("input",()=>{
+      curCompany().scores[sl.dataset.scoreslider] = parseInt(sl.value);
+      scheduleSave();
+      render();
+    });
+  });
+
+  // meeting mode
+  const qs = allQuestions(curCompany());
+  const idxKey = state.activeCompany;
+  const mn = document.getElementById("meetingNote");
+  if(mn) mn.addEventListener("input",()=>{
+    const c = curCompany();
+    const i = state.meetingIndex[idxKey];
+    if(!c.meeting.answers[i]) c.meeting.answers[i]={status:"",note:""};
+    c.meeting.answers[i].note = mn.value;
+    scheduleSave();
+  });
+  document.querySelectorAll("[data-mstatus]").forEach(b=>b.addEventListener("click",()=>{
+    const c = curCompany();
+    const i = state.meetingIndex[idxKey];
+    if(!c.meeting.answers[i]) c.meeting.answers[i]={status:"",note:""};
+    c.meeting.answers[i].status = b.dataset.mstatus;
+    scheduleSave(); render();
+  }));
+  const mp = document.getElementById("meetingPrev");
+  if(mp) mp.addEventListener("click",()=>{ state.meetingIndex[idxKey] = Math.max(0,state.meetingIndex[idxKey]-1); render(); });
+  const mnx = document.getElementById("meetingNext");
+  if(mnx) mnx.addEventListener("click",()=>{ state.meetingIndex[idxKey] = Math.min(qs.length-1,state.meetingIndex[idxKey]+1); render(); });
+  document.querySelectorAll("[data-jumpq]").forEach(b=>b.addEventListener("click",()=>{
+    state.meetingIndex[idxKey] = parseInt(b.dataset.jumpq); render();
+  }));
+  const cqa = document.getElementById("customQAdd");
+  if(cqa) cqa.addEventListener("click",()=>{
+    const inp = document.getElementById("customQInput");
+    if(inp.value.trim()){
+      curCompany().meeting.customQuestions.push(inp.value.trim());
+      scheduleSave(); render(); showToast("Sawaal add ho gaya");
+    }
+  });
+
+  // export
+  const prb = document.getElementById("printReportBtn");
+  if(prb) prb.addEventListener("click", printReport);
+  const ecb = document.getElementById("exportCsvBtn");
+  if(ecb) ecb.addEventListener("click", exportCsv);
+  const ecv2 = document.getElementById("exportCsvV2Btn");
+  if(ecv2) ecv2.addEventListener("click", exportProductsCsvV2);
+  const ecmp = document.getElementById("exportComparisonCsvBtn");
+  if(ecmp) ecmp.addEventListener("click", exportComparisonCsv);
+  const ejb = document.getElementById("exportJsonBtn");
+  if(ejb) ejb.addEventListener("click", exportJson);
+  const jib = document.getElementById("jsonImportBtn");
+  const jif = document.getElementById("jsonImportFile");
+  if(jib && jif) jib.addEventListener("click",()=>jif.click());
+  if(jif) jif.addEventListener("change",(e)=>{
+    const file = e.target.files && e.target.files[0];
+    e.target.value = "";
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = async ()=>{
+      try{
+        const parsed = JSON.parse(String(reader.result));
+        if(!parsed || typeof parsed!=="object"){ showToast("Invalid backup file"); return; }
+        if(!confirm("Restore this backup? This will REPLACE all current data in this browser. This cannot be undone.")) return;
+        const fresh = freshState();
+        state = Object.assign(fresh, parsed);
+        state.c1 = migrateCompany(parsed.c1, "Company 1");
+        state.c2 = migrateCompany(parsed.c2, "Company 2");
+        if(!state.meetingIndex) state.meetingIndex = {c1:0,c2:0};
+        if(!state.openSections) state.openSections = {};
+        await migrateInlinePhotos(state.c1); // in case this backup pre-dates split photo storage
+        await migrateInlinePhotos(state.c2);
+        const photoData = parsed.__photoData || {};
+        for(const id of Object.keys(photoData)){
+          photoCache.set(id, photoData[id]);
+          try{ await savePhotoBlob(id, photoData[id]); }catch(e){ /* stays available in-memory this session at least */ }
+        }
+        scheduleSave(); render(); showToast("Backup restored"+(Object.keys(photoData).length?` (${Object.keys(photoData).length} photos)`:""));
+      }catch(err){ showToast("Could not read backup file: "+err.message); }
+    };
+    reader.readAsText(file);
+  });
+}
+
+/* ================= EXPORT FUNCTIONS ================= */
+function downloadCsv(rows, filename){
+  const csv = rows.map(r=>r.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\r\n");
+  const blob = new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  showToast("CSV downloaded");
+}
+function exportProductsCsvV2(){
+  const rows = [["Company","Product","Category","Pack Size","Qty","MRP","Listed Distributor Price","GST %","GST Type","Scheme Type","Scheme Value","Retailer Selling Price",
+    "Effective Purchase Price","Distributor Margin %","Distributor Markup %","Retailer Margin %","Stock Value (Effective)","Total Distributor GP","Total Retailer GP"]];
+  [state.c1,state.c2].forEach(c=>{
+    c.products.forEach(p=>{
+      const calc = productCalc(p);
+      const schemeVal = p.schemeType==="Percentage"?p.schemePct : p.schemeType==="Flat"?p.schemeFlat : p.schemeType==="Free Units"?p.schemeFreeUnits :
+        p.schemeType==="Buy X Get Y"? `${p.schemeBuyX}/${p.schemeGetY}` : (p.scheme||"");
+      rows.push([c.name,p.name,p.category,p.packSize,p.qty,p.mrp,p.distPrice,p.gstPct,p.gstType||"Unknown",p.schemeType||"None",schemeVal,p.retailPrice,
+        calc.effPrice.toFixed(2),calc.distMarginPct.toFixed(2),calc.distMarkupPct.toFixed(2),calc.retMarginPct.toFixed(2),calc.stockValue.toFixed(2),calc.totalDistGP.toFixed(2),calc.totalRetGP.toFixed(2)]);
+    });
+  });
+  downloadCsv(rows,"distributor-products-v2.csv");
+}
+function exportComparisonCsv(){
+  const rows = [["Company","Legal Name","GSTIN","Contact Person","Phone",
+    "Investment","Inventory Value (Effective)","Unrepresented Investment","Branding","Registration","Transport","Deposit","GST","Other",
+    "District","Territory Type","Territory Tier","Agreement Written","Can Appoint Another","Monthly Target","Quarterly Target","Annual Target","Expected Monthly Sales",
+    "Reorder MOQ","Reorder Price","Transport Terms","Damage Policy","Expiry Policy","Unsold Policy","Marketing Support (est value)","Staff Support","Credit Terms","Exit Policy",
+    "Document Verification %","Fatal Risk","Risk Level","Weighted Distributor Margin","Weighted Distributor Markup","Score","Final Decision"]];
+  [state.c1,state.c2].forEach(c=>{
+    const s=companySummary(c), sc=computeScore(c), w=weightedMargins(c.products), d=companyDecision(c);
+    const total=num(c.investment.total);
+    const nonInv = num(c.investment.branding)+num(c.investment.registration)+num(c.investment.transport)+num(c.investment.deposit)+num(c.investment.gst)+num(c.investment.other);
+    const unrep = total>0? Math.max(0,total-w.totalEffCost-nonInv):0;
+    const tier = territoryTier(c.territory,c.documents).label;
+    rows.push([
+      c.name,c.meta.legalName,c.meta.gstin,c.meta.contactPerson,c.meta.phone,
+      total,w.totalEffCost.toFixed(2),unrep.toFixed(2),c.investment.branding,c.investment.registration,c.investment.transport,c.investment.deposit,c.investment.gst,c.investment.other,
+      c.territory.district,c.territory.type,tier,c.territory.agreementMentions,c.territory.canAppoint,c.target.monthly,c.target.quarterly,c.target.annual,c.simulator.monthlySales,
+      c.reorder.moq,c.reorder.price,c.transport.firstOrder,c.returns.breakage,c.returns.expiredReturn,c.returns.unsold,c.marketing.estValue,c.staff.companySalesman,c.credit.terms,c.exit.canCancel,
+      docVerificationPct(c), s.hasFatal?"Yes":"No", s.level.label, w.weightedMarginPct.toFixed(2), w.weightedMarkupPct.toFixed(2), sc.total, d.decision
+    ]);
+  });
+  downloadCsv(rows,"distributor-comparison-full-v2.csv");
+}
+function exportCsv(){
+  let rows = [["Company","Product","Category","Pack Size","Qty","MRP","Distributor Price","GST%","Scheme","Retailer Selling Price","Distributor Margin %","Retailer Margin %","Total Stock Value"]];
+  [state.c1,state.c2].forEach(c=>{
+    c.products.forEach(p=>{
+      const calc = productCalc(p);
+      rows.push([c.name,p.name,p.category,p.packSize,p.qty,p.mrp,p.distPrice,p.gstPct,p.scheme,p.retailPrice,calc.distMarginPct.toFixed(2),calc.retMarginPct.toFixed(2),calc.stockValue]);
+    });
+  });
+  const csv = rows.map(r=>r.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv],{type:"text/csv"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "distributor-comparison-products.csv";
+  a.click();
+  showToast("CSV downloaded");
+}
+const SECTION_PRINT_LABELS = {
+  meta:"Company Information", investment:"Investment", products:"Products", territory:"Territory",
+  target:"Target", reorder:"Reorder", transport:"Transport", returns:"Returns / Damage / Expiry",
+  marketing:"Marketing", staff:"Staff", credit:"Credit", exit:"Exit Policy", documents:"Documents",
+  paymentSafety:"Payment Safety", simulator:"Simulator",
+};
+async function exportJson(){
+  await preloadAllPhotos(state.c1);
+  await preloadAllPhotos(state.c2);
+  const photoData = {};
+  [...allPhotoIdsIn(state.c1), ...allPhotoIdsIn(state.c2)].forEach(id=>{
+    const v = photoCache.get(id);
+    if(v && v!=="loading") photoData[id] = v;
+  });
+  const payload = {...state, __photoData: photoData};
+  const blob = new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "distributor-decision-pro-backup.json";
+  a.click();
+  showToast("Backup downloaded (photos included)");
+}
+async function printReport(){
+  const c1=state.c1, c2=state.c2;
+  await preloadAllPhotos(c1);
+  await preloadAllPhotos(c2);
+  const fd = finalDecision();
+  const td = "padding:4px 6px;border:1px solid #ddd;font-size:11.5px;";
+  const tdb = td+"font-weight:bold;";
+  function row(label,val,bold){ return `<tr><td style="${bold?tdb:td}">${esc(label)}</td><td style="${bold?tdb:td}">${val}</td></tr>`; }
+  function companySection(c){
+    const s = companySummary(c);
+    const sc = computeScore(c);
+    const w = weightedMargins(c.products);
+    const sim = computeSimulator(c);
+    const sens = computeSensitivity(c);
+    const items = computeRiskItems(c);
+    const d = companyDecision(c);
+    const ps = paymentSafetyStatus(c);
+    const neg = generateNegotiationPoints(c);
+    const tier = territoryTier(c.territory, c.documents);
+    const total = num(c.investment.total);
+    const nonInv = num(c.investment.branding)+num(c.investment.registration)+num(c.investment.transport)+num(c.investment.deposit)+num(c.investment.gst)+num(c.investment.other);
+    const unrep = total>0 ? Math.max(0,total-w.totalEffCost-nonInv) : 0;
+    const bySev = {FATAL:[],HIGH:[],MEDIUM:[],LOW:[]};
+    items.forEach(i=>bySev[i.severity].push(i));
+
+    return `
+    <div style="page-break-before:always;">
+    <h2 style="font-family:Georgia,serif;border-bottom:2px solid #333;padding-bottom:4px;">${esc(c.name)} — ${esc(c.meta.legalName)||"Legal name not entered"}</h2>
+    <div style="font-size:11px;color:#900;font-weight:bold;">${(c.investment.notes||"").includes("DEMO")?"⚠️ CONTAINS DEMO/SAMPLE DATA — not verified company information":""}</div>
+
+    <h3>A. Executive Decision</h3>
+    <table style="width:100%;border-collapse:collapse;">
+      ${row("Decision", esc(d.decision), true)}
+      ${row("Fatal Risk Status", d.hasFatal?"FATAL RISK PRESENT":"None detected")}
+      ${row("Verification %", sc.docPct+"%")}
+      ${row("Score", sc.total+"/100")}
+      ${row("Risk Tier", esc(d.level.label))}
+    </table>
+    <ul style="font-size:11.5px;">${d.reasons.map(r=>`<li>${esc(r)}</li>`).join("")}</ul>
+
+    <h3>B. Investment Analysis</h3>
+    <table style="width:100%;border-collapse:collapse;">
+      ${row("Total Investment", inr(total))}
+      ${row("Inventory (Effective) Value", inr(w.totalEffCost))}
+      ${row("Unrepresented Investment", inr(unrep))}
+      ${row("Branding/Other Charges", inr(nonInv))}
+      ${row("Reconciliation", sc.reconciled?"OK":"DOES NOT RECONCILE")}
+    </table>
+
+    <h3>C. Product Economics</h3>
+    <table style="width:100%;border-collapse:collapse;">
+      ${row("Product Count", c.products.length)}
+      ${row("Weighted Distributor Margin", pct(w.weightedMarginPct))}
+      ${row("Weighted Distributor Markup", pct(w.weightedMarkupPct))}
+      ${row("Total Stock Value (Effective)", inr(w.totalEffCost))}
+      ${row("Total MRP Value", inr(w.totalMRPValue))}
+      ${row("Total Potential Gross Profit", inr(w.totalGP))}
+    </table>
+
+    <h3>D. Sales & Profit Simulation</h3>
+    <table style="width:100%;border-collapse:collapse;">
+      ${row("Monthly Sales (entered)", c.simulator.monthlySales?inr(num(c.simulator.monthlySales)):"Not entered")}
+      ${row("Selected Margin", pct(sim.marginPct)+" ("+sim.marginSource+")")}
+      ${row("Operating Expenses", inr(sim.expenses))}
+      ${row("Estimated Net Operating Profit", inr(sim.netProfit), true)}
+      ${row("Break-even Sales", sim.breakEvenSales!=null?inr(sim.breakEvenSales):"—")}
+      ${row("Recovery Period", sim.recoveryMonths!=null?sim.recoveryMonths.toFixed(1)+" months":"Investment recovery is not occurring under this scenario.")}
+      ${Object.entries(sens).map(([n,v])=>row(n+" Scenario (monthly profit / recovery)", inr(v.netProfit)+" / "+(v.recoveryMonths!=null?v.recoveryMonths.toFixed(1)+" mo":"Not achieved"))).join("")}
+    </table>
+    <div style="font-size:10.5px;color:#777;font-style:italic;">Scenario estimate — not a forecast. Not a guaranteed return.</div>
+
+    <h3>E. Territory</h3>
+    <table style="width:100%;border-collapse:collapse;">
+      ${row("District", esc(c.territory.district)||"—")}
+      ${row("Territory Tier", esc(tier.label))}
+      ${row("Exclusivity Claimed", esc(c.territory.type)||"—")}
+      ${row("Written in Agreement", esc(c.territory.agreementMentions)||"Not Clear")}
+      ${row("Company Can Appoint Another", esc(c.territory.canAppoint)||"Not Clear")}
+    </table>
+
+    <h3>F. Targets</h3>
+    <table style="width:100%;border-collapse:collapse;">
+      ${row("Monthly Target", c.target.monthly?inr(num(c.target.monthly)):"—")}
+      ${row("Weekly (derived)", c.target.monthly?inr(num(c.target.monthly)/4.33):"—")}
+      ${row("Quarterly (derived)", c.target.monthly?inr(num(c.target.monthly)*3):"—")}
+      ${row("Annual (derived)", c.target.monthly?inr(num(c.target.monthly)*12):"—")}
+      ${row("Expected Monthly Sales", c.simulator.monthlySales?inr(num(c.simulator.monthlySales)):"Not entered")}
+      ${row("Consequence of Missing Target", esc(c.target.failureConsequence)||"Not Clear")}
+    </table>
+
+    <h3>G. Risk (FATAL / HIGH / MEDIUM / LOW)</h3>
+    ${["FATAL","HIGH","MEDIUM","LOW"].filter(sv=>bySev[sv].length).map(sv=>`
+      <div style="font-weight:bold;margin-top:6px;color:${sv==='FATAL'||sv==='HIGH'?'#AE2E24':'#A66A0C'};">${sv} (${bySev[sv].length})</div>
+      <ul style="font-size:11px;margin:2px 0 6px;">${bySev[sv].map(i=>`<li>${esc(i.text)} — <i>${esc(i.category)}</i></li>`).join("")}</ul>
+    `).join("") || `<div>No risk items detected from entered data.</div>`}
+
+    <h3>H. Documents</h3>
+    <table style="width:100%;border-collapse:collapse;">
+      ${DOC_LIST.map(([k,label])=>row(label, esc(c.documents[k])||"Not Available")).join("")}
+    </table>
+
+    <h3>I. Payment Safety</h3>
+    <table style="width:100%;border-collapse:collapse;">
+      ${row("Verification %", ps.pct+"%")}
+      ${row("Safe to Pay", ps.safeToPay?"Yes — critical items verified":"NO — "+ps.criticalPending.length+" critical item(s) unverified", true)}
+      ${PAYMENT_SAFETY_ITEMS.map(([k,label])=>row(label, esc(c.paymentSafety[k])||"Not Verified")).join("")}
+    </table>
+
+    <h3>J. Negotiation</h3>
+    ${neg.length?neg.slice(0,6).map(p=>`<div style="margin-bottom:6px;font-size:11px;"><b>${esc(p.issue)}</b>: ${esc(p.ask)} <i>(Walk-away: ${esc(p.walkAway)})</i></div>`).join(""):"<div>No specific negotiation points auto-detected.</div>"}
+
+    <h3>Photo Evidence</h3>
+    ${(()=>{
+      const photoRows = [];
+      Object.keys(c).forEach(k=>{ if(c[k] && Array.isArray(c[k].photos)) c[k].photos.forEach(p=>photoRows.push({section:SECTION_PRINT_LABELS[k]||k, caption:p.caption, id:p.id})); });
+      if(c.meeting && c.meeting.answers) Object.entries(c.meeting.answers).forEach(([qi,a])=>{ if(Array.isArray(a.photos)) a.photos.forEach(p=>photoRows.push({section:"Meeting Q"+(Number(qi)+1), caption:p.caption, id:p.id})); });
+      if(!photoRows.length) return `<div style="font-size:11px;color:#777;">No photos attached.</div>`;
+      return `<div style="display:flex;flex-wrap:wrap;gap:8px;">
+        ${photoRows.map(p=>{
+          const src = photoCache.get(p.id);
+          const img = (src && src!=="loading") ? `<img src="${src}" style="width:100%;height:105px;object-fit:cover;border:1px solid #ccc;border-radius:6px;">`
+            : `<div style="width:100%;height:105px;border:1px solid #ccc;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#999;font-size:10px;">Image unavailable</div>`;
+          return `<div style="width:140px;font-size:10px;text-align:center;">${img}
+            <div style="margin-top:3px;font-weight:bold;">${esc(p.caption)||"(no caption)"}</div>
+            <div style="color:#999;">${esc(p.section)}</div>
+          </div>`;
+        }).join("")}
+      </div>`;
+    })()}
+    </div>`;
+  }
+  const html = `
+    <h1 style="font-family:Georgia,serif;">Distributor Decision Pro — Full Comparison Report</h1>
+    <p style="color:#555;font-size:12px;">Generated: ${new Date().toLocaleString("en-IN")}</p>
+    <h2 style="margin-top:20px;">K. Final Recommendation: ${esc(fd.decision)}</h2>
+    <ul style="font-size:12.5px;">${fd.reasons.map(r=>`<li>${esc(r)}</li>`).join("")}</ul>
+    ${fd.pendingItems.length?`<div style="background:#fbeae8;padding:10px;border-radius:6px;"><b>DO NOT PAY YET — Pending:</b><ul style="font-size:12px;">${fd.pendingItems.map(p=>`<li>${esc(p)}</li>`).join("")}</ul></div>`:""}
+    <p style="font-size:11px;color:#777;font-style:italic;">This report is based entirely on information entered into the app. It is an estimate, not a guaranteed return, and not legal or financial advice. Verify all documents in original before paying.</p>
+    <hr>
+    ${companySection(c1)}
+    ${companySection(c2)}
+  `;
+  document.getElementById("print-area").innerHTML = html;
+  window.print();
+}
+
+/* ================= INIT ================= */
+async function init(){
+  const loaded = await loadState();
+  if(loaded){
+    const fresh = freshState();
+    state = Object.assign(fresh, loaded);
+    state.c1 = migrateCompany(loaded.c1, "Company 1");
+    state.c2 = migrateCompany(loaded.c2, "Company 2");
+    if(!state.meetingIndex) state.meetingIndex = {c1:0,c2:0};
+    if(!state.openSections) state.openSections = {};
+    const changed1 = await migrateInlinePhotos(state.c1);
+    const changed2 = await migrateInlinePhotos(state.c2);
+    if(changed1 || changed2) scheduleSave();
+  }
+  render();
+}
+init();
+</script>
+</body>
+</html>
